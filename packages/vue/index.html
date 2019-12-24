@@ -1,0 +1,219 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <title>Blog by limingkang</title>
+  <script src="./dist/vue.global.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+  <meta name="description" content="前端开发记录">
+  <meta name="keywords" content="gulp,react,node,webpack,redux,require,mysql,mongodb,vue,es6">
+</head>
+
+<body>
+  <div id="container"></div>
+  <script type="text/javascript">
+    // function usePosition() { // 实时获取鼠标位置
+    //     let state = Vue.reactive({ x: 0, y: 0 });
+    //     function update(e) {
+    //       state.x = e.pageX
+    //       state.y = e.pageY
+    //     }
+    //     Vue.onMounted(() => {
+    //       window.addEventListener('mousemove', update)
+    //     })
+    //     Vue.onUnmounted(() => {
+    //       window.removeEventListener('mousemove', update)
+    //     })
+    //     return Vue.toRefs(state);
+    //   }
+    //   const App = {
+    //     setup() { // Composition API 使用的入口
+    //       const state = Vue.reactive({ name: 'youxuan' }); // 定义响应数据
+    //       const { x, y } = usePosition(); // 使用公共逻辑
+    //       Vue.onMounted(() => {
+    //         console.log('当组挂载完成')
+    //       });
+    //       Vue.onUpdated(() => {
+    //         console.log('数据发生更新')
+    //       });
+    //       Vue.onUnmounted(() => {
+    //         console.log('组件将要卸载')
+    //       })
+    //       function changeName() {
+    //         state.name = 'webyouxuan';
+    //       }
+    //       return { // 返回上下文,可以在模板中使用
+    //         state,
+    //         changeName,
+    //         x,
+    //         y
+    //       }
+    //     },
+    //     template: `<button @click="changeName" class= "test1 test2 test3" style="color: red">{{state.name}} 鼠标x: {{x}} 鼠标: {{y}}</button>`
+    //   }
+    //   Vue.createApp().mount(App, container);
+
+
+
+    // const app = {
+    //     template: `<div
+    //       class="static"
+    //       v-bind:class="{ active: isActive, 'text-danger': hasError }"
+    //       v-bind:style="{ color: activeColor, fontSize: fontSize + 'px' }"
+    //     >{{count}}</div>`,
+    //     data() {
+    //       return { 
+    //         isActive: true,
+    //         hasError: false,
+    //         count : 100,
+    //         activeColor: 'red',
+    //         fontSize: 30
+    //       }
+    //     },
+    //   }
+    //   let proxy = Vue.createApp().mount(app, container);
+    //   console.log(proxy);
+    //   proxy.$watch('fontSize',function(old,newd){
+    //     console.log(111, old);
+    //     console.log(2222, newd);
+    //   });
+    // setTimeout(() => {
+    //   proxy.count = 200;
+    // }, 2000)
+
+
+
+    // 数据响应系统示例
+    const { createApp, reactive, computed, effect, createComponent, render, h, compile } = Vue;
+    // const RootComponent = {
+    //   template: `
+    //     <button @click="increment">
+    //       Count is: {{ state.count }}
+    //     </button>
+    //   `,
+    //   setup() {
+    //     const state = reactive({
+    //       count: 0,
+    //     })
+    //     // console.log(state);
+    //     for (const key in state) {
+    //       // console.log(state[key])
+    //     }
+    //     function increment() {
+    //       state.count++
+    //     }
+
+    //     return {
+    //       state,
+    //       increment
+    //     }
+    //   }
+    // }
+    // createApp().mount(RootComponent, '#container')
+
+
+    // const Comp = createComponent({
+    //   data() {
+    //     return {
+    //       foo: 1
+    //     }
+    //   },
+    //   extends: {
+    //     data() {
+    //       return {
+    //         my: 1
+    //       }
+    //     }
+    //   },
+    //   watch: {
+    //     foo: function(val, oldval) {
+    //       console.log(val);
+    //     }
+    //   },
+    //   computed: {
+    //     bar() {
+    //       return this.foo + 1
+    //     },
+    //     baz() {
+    //       return this.bar + 1
+    //     }
+    //   },
+    //   render() {
+    //     return h(
+    //       'div',
+    //       {
+    //         onClick: () => {
+    //           this.foo++
+    //           //console.log(this.my)
+    //         }
+    //       },
+    //       this.bar + this.baz
+    //     )
+    //   }
+    // })
+    // const vnode = h(Comp);
+    // render(vnode, '#container');
+
+
+    // let o = reactive({ a: 1 })
+    // const f1 = () => {
+    //   console.log(o.a)
+    // }
+    // const e1 = effect(f1)
+    // const f2 = () => o.a
+    // let b = computed(f2)
+    // const f3 = () => {
+    //   //console.log(b.value)
+    // }
+    // const e2 = effect(f3)
+    // console.log(e1.deps);
+    // console.log(e2.deps);
+    // document.onkeydown = function (event) {
+    //     var e = event || window.event || arguments.callee.caller.arguments[0];
+    //     console.log(e);
+    //   }; 
+
+
+
+
+    // 编译问题原理
+    // var template = `<div v-text="text"></div>
+    //     <div v-html="html"></div>
+    //     <div v-cloak>test</div>
+    //     <div style="color=red">red</div>
+    //     <div :style="{color: 'green'}"></div>`
+    // const { code } = compile(template);
+    // console.log(code);
+    const RootComponent = {
+        template: `
+        <div>test</div>
+        <button @click="increment" v-if="state.show">
+          Count is: {{ state.count }}
+        </button>
+      `,
+        setup() {
+          const state = reactive({
+            count: 0,
+            show: true,
+          })
+          // console.log(state);
+          for (const key in state) {
+            // console.log(state[key])
+          }
+          function increment() {
+            state.count++
+          }
+
+          return {
+            state,
+            increment
+          }
+        }
+      }
+      createApp().mount(RootComponent, '#container')
+  </script>
+</body>
+
+</html>
