@@ -12,7 +12,8 @@
     "lint": "prettier --write --parser typescript \"packages/**/*.ts?(x)\"",
     "test": "jest",
     "docs:dev": "vuepress dev docs",
-    "docs:build": "vuepress build docs"
+    "docs:build": "vuepress build docs",
+    "deploy": "bash deploy.sh"
   },
   "gitHooks": {
     "pre-commit": "lint-staged",
