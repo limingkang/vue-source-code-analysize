@@ -1,6 +1,6 @@
 module.exports = [
   {
-    title: '技术沉淀',
+    title: '逐个击破',
     path: '/',
     collapsable: false,
     children: [
