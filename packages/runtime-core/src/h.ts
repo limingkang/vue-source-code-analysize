@@ -21,7 +21,7 @@ import { ExtractPropTypes } from './componentProps'
 
 // `h` is a more user-friendly version of `createVNode` that allows omitting the
 // props when possible. It is intended for manually written render functions.
-// Compiler-generated code uses `createVNode` because
+// 编译器生成代码时候还是使用`createVNode`
 // 1. it is monomorphic and avoids the extra call overhead
 // 2. it allows specifying patchFlags for optimization
 
@@ -51,7 +51,7 @@ h(Component, null, {})
 **/
 
 export interface RawProps {
-  [key: string]: any   // 定义索引只能是字符串
+  [key: string]: any // 定义索引只能是字符串
   key?: string | number
   ref?: string | Ref | Function
   // used to differ from a single VNode object as children
@@ -68,8 +68,6 @@ export type RawChildren =
   | (() => any)
 
 export { RawSlots }
-
-
 
 // fake constructor type returned from `createComponent`
 interface Constructor<P = any> {
@@ -147,21 +145,22 @@ export function h(
 ): VNode {
   if (arguments.length === 2) {
     if (isObject(propsOrChildren) && !isArray(propsOrChildren)) {
-      // single vnode without props
+      // 没有props只有孩子vnode节点
       if (isVNode(propsOrChildren)) {
+        // 如果是vnode节点
         return createVNode(type, null, [propsOrChildren])
       }
-      // props without children
+      // 没有孩子节点只有props
       return createVNode(type, propsOrChildren)
     } else {
-      // omit props
+      // 如果是其他类型则忽略props
       return createVNode(type, null, propsOrChildren)
     }
   } else {
+    // 三个参数说明属性props和孩子节点都有
     if (isVNode(children)) {
       children = [children]
     }
     return createVNode(type, propsOrChildren, children)
   }
 }
-

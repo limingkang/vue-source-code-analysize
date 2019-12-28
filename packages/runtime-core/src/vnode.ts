@@ -41,7 +41,7 @@ type VNodeChildAtom<HostNode, HostElement> =
   | null
   | void
 
-  // 这个接口可循环创建空的多维数组vnode
+// 这个接口可循环创建空的多维数组vnode
 export interface VNodeChildren<HostNode = any, HostElement = any>
   extends Array<
       | VNodeChildren<HostNode, HostElement>
@@ -115,6 +115,8 @@ const blockStack: (VNode[] | null)[] = []
 //   }
 // disableTracking is true when creating a fragment block, since a fragment
 // always diffs its children.
+// 当创建一个碎片块的时候使用，因为碎片块总需要diffs它的子节点
+// 碎片快其实就是动态节点块例如使用动态属性的节点使用v-for、v-if或者绑定事件等都需要触发此方法创建代码块
 export function openBlock(disableTracking?: boolean) {
   blockStack.push(disableTracking ? null : [])
 }
@@ -136,10 +138,12 @@ export function createBlock(
   const vnode = createVNode(type, props, children, patchFlag, dynamicProps)
   shouldTrack = true
   const trackedNodes = blockStack.pop()
+  console.log(trackedNodes)
   vnode.dynamicChildren =
     trackedNodes && trackedNodes.length ? trackedNodes : EMPTY_ARR
   // a block is always going to be patched
   trackDynamicNode(vnode)
+  console.log(vnode)
   return vnode
 }
 
@@ -154,9 +158,9 @@ export function createVNode(
   patchFlag: number = 0,
   dynamicProps: string[] | null = null
 ): VNode {
-  // class & style normalization.
+  // class & style序列化
   if (props !== null) {
-    // for reactive or proxy objects, we need to clone it to enable mutation.
+    // 对于reactive和proxy代理对象我们去除代理得到纯对象
     if (isReactive(props) || SetupProxySymbol in props) {
       props = extend({}, props)
     }
@@ -168,6 +172,7 @@ export function createVNode(
       // reactive state objects need to be cloned since they are likely to be
       // mutated
       if (isReactive(style) && !isArray(style)) {
+        // 去掉对象的proxy代理
         style = extend({}, style)
       }
       props.style = normalizeStyle(style)
@@ -181,7 +186,6 @@ export function createVNode(
       : isFunction(type)
         ? ShapeFlags.FUNCTIONAL_COMPONENT
         : 0
-
   const vnode: VNode = {
     _isVNode: true,
     type,
@@ -204,9 +208,11 @@ export function createVNode(
   normalizeChildren(vnode, children)
 
   // presence of a patch flag indicates this node needs patching on updates.
+  // 存在修补程序标志表示此节点需要在更新时修补
   // component nodes also should always be patched, because even if the
   // component doesn't need to update, it needs to persist the instance on to
   // the next vnode so that it can be properly unmounted later.
+  // 如果是动态节点块则需要保存动态节点块到blockStack上
   if (
     shouldTrack &&
     (patchFlag ||
@@ -218,7 +224,7 @@ export function createVNode(
 
   return vnode
 }
-
+// 在触发此方法之前必然运行openBlock方法插入一个空数组
 function trackDynamicNode(vnode: VNode) {
   const currentBlockDynamicNodes = blockStack[blockStack.length - 1]
   if (currentBlockDynamicNodes != null) {

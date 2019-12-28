@@ -4,8 +4,8 @@ module.exports = [
     path: '/',
     collapsable: false,
     children: [
-      ['/techAccumulate/vue-rfc', 'vue3.0响应式详解']
+      ['/techAccumulate/vue-rfc', 'vue3.0响应式详解'],
+      ['/easyInit/init', '核心渲染函数介绍']
     ]
   }
-
 ]

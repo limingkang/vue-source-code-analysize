@@ -7,12 +7,12 @@ function compileToFunction(
   template: string,
   options?: CompilerOptions
 ): RenderFunction {
-  const result = compile(template, {
+  const { code } = compile(template, {
     hoistStatic: true,
     ...options
   })
-  console.log(result);
-  return new Function('Vue', result.code)(runtimeDom) as RenderFunction
+  console.log(code)
+  return new Function('Vue', code)(runtimeDom) as RenderFunction
 }
 // 设置编译函数
 registerRuntimeCompiler(compileToFunction)

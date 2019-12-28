@@ -187,15 +187,39 @@
     // const { code } = compile(template);
     // console.log(code);
     const RootComponent = {
-        template: `
+      //   template: `
+      //   <div>test</div>
+      //   <p :class="state.name">
+      //     Count is
+      //   </p>
+      //   <div v-for="value in fordata">
+      //       {{value}}
+      //   </div>
+      //   <button @click="increment" v-if="state.show">
+      //     Count is: {{ state.count }}
+      //   </button>
+      // `,
+      // template: `
+      //   <div>test</div>
+      //   <div v-for="value in fordata">
+      //       <span @click="increment">{{value}}</span>
+      //   </div>
+      // `,
+      template: `
         <div>test</div>
-        <button @click="increment" v-if="state.show">
-          Count is: {{ state.count }}
-        </button>
+        <div v-for="value in fordata">
+            {{value}}
+        </div>
       `,
+        data() {
+          return {
+            fordata: [222, 333, 4444]
+          }
+        },
         setup() {
           const state = reactive({
-            count: 0,
+            name:'test',
+            count: 2,
             show: true,
           })
           // console.log(state);
