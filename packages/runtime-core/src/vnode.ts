@@ -138,12 +138,10 @@ export function createBlock(
   const vnode = createVNode(type, props, children, patchFlag, dynamicProps)
   shouldTrack = true
   const trackedNodes = blockStack.pop()
-  console.log(trackedNodes)
   vnode.dynamicChildren =
     trackedNodes && trackedNodes.length ? trackedNodes : EMPTY_ARR
   // a block is always going to be patched
   trackDynamicNode(vnode)
-  console.log(vnode)
   return vnode
 }
 

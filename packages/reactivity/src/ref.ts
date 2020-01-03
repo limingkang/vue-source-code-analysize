@@ -70,14 +70,15 @@ export function toRefs<T extends object>(
   }
   return ret
 }
-
+// 该方法给toRefs方法使用，用来保持响应式不丢失，下面代码可详细记录
 function toProxyRef<T extends object, K extends keyof T>(
   object: T,
   key: K
 ): Ref<T[K]> {
-  return {    //已近是响应式的情况下不需要依赖收集和触发跟新
+  return {
     [refSymbol]: true,
     get value(): any {
+      //让他触发原对象的响应式
       return object[key]
     },
     set value(newVal) {
@@ -109,7 +110,6 @@ export type UnwrapRef<T> = {
       : T extends BailTypes
         ? 'stop' // bail out on types that shouldn't be unwrapped
         : T extends object ? 'object' : 'stop']
-
 
 // 这里的文件的作用大致如下：
 // 我们在对象解构和扩散运算符时, 对原对象的引用都会丢失.同样对于响应式的数据:

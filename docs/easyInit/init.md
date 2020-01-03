@@ -228,6 +228,75 @@ export function h(
 
 ## createVNode函数
 位于runtime-core/src/vnode.ts中
+``` js
+export function createVNode(
+  type: VNodeTypes,
+  props: { [key: string]: any } | null = null,
+  children: unknown = null,
+  patchFlag: number = 0,
+  dynamicProps: string[] | null = null
+): VNode {
+  // class & style序列化
+  if (props !== null) {
+    // 对于reactive和proxy代理对象我们去除代理得到纯对象
+    if (isReactive(props) || SetupProxySymbol in props) {
+      props = extend({}, props)
+    }
+    if (props.class != null) {
+      // 把class数组或者对象形式的变成一个字符串
+      props.class = normalizeClass(props.class)
+    }
+    let { style } = props
+    if (style != null) {
+      if (isReactive(style) && !isArray(style)) {
+        // 去掉对象的proxy代理
+        style = extend({}, style)
+      }
+      // 格式化style属性变成对象形式
+      props.style = normalizeStyle(style)
+    }
+  }
+  // 标记传进来的组件需要生成的vnode类型
+  const shapeFlag = isString(type)
+    ? ShapeFlags.ELEMENT
+    : isObject(type)
+      ? ShapeFlags.STATEFUL_COMPONENT
+      : isFunction(type)
+        ? ShapeFlags.FUNCTIONAL_COMPONENT
+        : 0
+  const vnode: VNode = {
+    _isVNode: true,  // 标示是否是vnode节点
+    type,  // 保存整个传进来的组件参数
+    props,
+    key: (props && props.key) || null,
+    ref: (props && props.ref) || null,
+    children: null,
+    component: null,
+    suspense: null,
+    el: null,
+    anchor: null,
+    target: null,
+    shapeFlag,
+    patchFlag,
+    dynamicProps,
+    dynamicChildren: null,  // 保存动态的子节点如v-if、v-for等渲染出来的
+    appContext: null   // 保存整个app上下文如mixin、config等在mount方法触发时候赋值
+  }
+
+  normalizeChildren(vnode, children)
+
+  if (
+    shouldTrack &&
+    (patchFlag ||
+      shapeFlag & ShapeFlags.STATEFUL_COMPONENT ||
+      shapeFlag & ShapeFlags.FUNCTIONAL_COMPONENT)
+  ) {
+    trackDynamicNode(vnode)
+  }
+
+  return vnode
+}
+```
 
 ## openBlock、createBlock函数
 位于runtime-core/src/vnode.ts中该函数用于创建代码块时候使用，代码块其实就是动态节点块，例如使用
