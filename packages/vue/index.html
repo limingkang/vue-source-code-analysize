@@ -157,22 +157,28 @@
     // render(vnode, '#container');
 
 
-    let o = reactive({ a: 1 })
-    const f1 = () => {
-      console.log(o.a)
-    }
-    const e1 = effect(f1)
-    const f2 = () => o.a
-    let b = computed(f2)
-    const f3 = () => {
-      //console.log(b.value)
-    }
-    const e2 = effect(f3)
-    console.log(e1.deps);
-    console.log(e2.deps);
+    // let o = reactive(new Set())
+    let a = reactive({ t: 1 })
+    // const f1 = () => {
+    //   console.log(o.add)
+    // }
+    const f2 = () => {
+        console.log(a.t)
+      }
+   // const e1 = effect(f1)
+    const e2 = effect(f2)
+    // const f2 = () => o.a
+    // let b = computed(f2)
+    // const f3 = () => {
+    //   //console.log(b.value)
+    // }
+    // const e2 = effect(f3)
+    // console.log(e1.deps);
+    // console.log(e2.deps);
     document.onkeydown = function (event) {
-        var e = event || window.event || arguments.callee.caller.arguments[0];
-        console.log(e);
+         a.t = 34;
+        // var e = event || window.event || arguments.callee.caller.arguments[0];
+        // console.log(e);
       }; 
 
 

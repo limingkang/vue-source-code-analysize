@@ -84,8 +84,7 @@ function set(
   const hadKey = hasOwn(target, key)
   // 设置原始对象的值,返回的boolean值表示设置是否成功
   const result = Reflect.set(target, key, value, receiver)
-  // 如果目标在原型链上，不要触发
-  // 如果receiver存在于taRaw里，即receiver是proxy,即不再原型链上
+  // 如果receiver存在于taRaw里，receiver是代理对象本身new proxy(target返回值)
   if (target === toRaw(receiver)) {
     /* istanbul ignore else */
     if (__DEV__) {
@@ -99,12 +98,14 @@ function set(
       // 如果没有属性值，则执行add方法
       if (!hadKey) {
         trigger(target, OperationTypes.ADD, key)
-      } else if (value !== oldValue) {  //否则如果新旧值不同，则执行SET方法
+      } else if (value !== oldValue) {
+        //否则如果新旧值不同，则执行SET方法
         trigger(target, OperationTypes.SET, key)
       }
       // 通过以上判断可以解决数组重复执行set问题
     }
   }
+  // 必须return是否设置成功否则报错
   return result
 }
 // let data = ['a', 'b']

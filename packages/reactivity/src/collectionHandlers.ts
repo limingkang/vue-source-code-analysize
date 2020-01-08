@@ -30,8 +30,6 @@ function size(target: any) {
   track(target, OperationTypes.ITERATE)
   return Reflect.get(proto, 'size', target)
 }
-//这里传进来的this上下文是new Set()
-//value是new proxy()类型
 function add(this: any, value: any) {
   value = toRaw(value)
   const target = toRaw(this)

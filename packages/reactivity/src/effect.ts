@@ -49,7 +49,8 @@ export function effect<T = any>(
     fn = fn.raw
   }
   const effect = createReactiveEffect(fn, options)
-  if (!options.lazy) { //表示是否立即执行fn函数
+  if (!options.lazy) {
+    //表示是否立即执行fn函数
     effect()
   }
   return effect
@@ -97,8 +98,8 @@ function run(effect: ReactiveEffect, fn: Function, args: any[]): any {
     // 初始化mount的时候会执行effect函数
     try {
       activeReactiveEffectStack.push(effect)
-      return fn(...args)  
-      //这里加入函数里有方法可以触发track方法啥的的就可以通过activeReactiveEffectStack
+      return fn(...args)
+      //这里假如函数里有方法可以触发track方法啥的的就可以通过activeReactiveEffectStack
       //来取到现在活跃运行的effect,因为先运算fn方法的
     } finally {
       activeReactiveEffectStack.pop()
@@ -257,7 +258,6 @@ function scheduleRun(
     effect()
   }
 }
-
 
 // computed ReactiveEffect执行时机
 // let a = reactive({ b: 2 })
