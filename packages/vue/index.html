@@ -158,15 +158,15 @@
 
 
     // let o = reactive(new Set())
-    let a = reactive({ t: 1 })
+    // let a = reactive({ t: 1 })
     // const f1 = () => {
     //   console.log(o.add)
     // }
-    const f2 = () => {
-        console.log(a.t)
-      }
+    // const f2 = () => {
+    //     console.log(a.t)
+    //   }
    // const e1 = effect(f1)
-    const e2 = effect(f2)
+    // const e2 = effect(f2)
     // const f2 = () => o.a
     // let b = computed(f2)
     // const f3 = () => {
@@ -175,11 +175,11 @@
     // const e2 = effect(f3)
     // console.log(e1.deps);
     // console.log(e2.deps);
-    document.onkeydown = function (event) {
-         a.t = 34;
-        // var e = event || window.event || arguments.callee.caller.arguments[0];
-        // console.log(e);
-      }; 
+    // document.onkeydown = function (event) {
+    //      a.t = 34;
+    //     var e = event || window.event || arguments.callee.caller.arguments[0];
+    //     console.log(e);
+    //   }; 
 
 
 
@@ -192,58 +192,60 @@
     //     <div :style="{color: 'green'}"></div>`
     // const { code } = compile(template);
     // console.log(code);
-    // const RootComponent = {
-    //     template: `
-    //     <div>test</div>
-    //     <p :class="state.name">
-    //       Count is
-    //     </p>
-    //     <div v-for="value in state.fordata">
-    //         {{value}}
-    //     </div>
-    //     <button @click="increment" v-if="state.show">
-    //       Count is: {{ state.count }}
-    //     </button>
-    //   `,
-    //   // template: `
-    //   //   <div>test</div>
-    //   //   <div v-for="value in fordata">
-    //   //       <span @click="increment">{{value}}</span>
-    //   //   </div>
-    //   // `,
-    //   // template: `
-    //   //   <div>test</div>
-    //   //   <div v-for="value in fordata">
-    //   //       {{value}}
-    //   //   </div>
-    //   // `,
-    //   //   data() {
-    //   //     return {
-    //   //       fordata: [222, 333, 4444]
-    //   //     }
-    //   //   },
-    //     setup() {
-    //       const state = reactive({
-    //         name:'test',
-    //         count: 2,
-    //         show: true,
-    //         fordata: [222, 333, 4444]
-    //       })
-    //       // console.log(state);
-    //       for (const key in state) {
-    //         // console.log(state[key])
-    //       }
-    //       function increment() {
-    //         state.count++
-    //       }
+    const RootComponent = {
+        template: `
+        <div>test</div>
+        <p :class="state.name">
+          <span>Count is</span>
+          <div v-for="value in state.fordata">
+            {{value}}
+          </div>
+        </p>
+        <button @click="increment" v-if="state.show">
+          Count is: {{ state.count }}
+        </button>
+      `,
+      // template: `
+      //   <div>test</div>
+      //   <div v-for="value in fordata">
+      //       <span @click="increment">{{value}}</span>
+      //   </div>
+      // `,
+      // template: `
+      //   <div>test</div>
+      //   <div v-for="value in fordata">
+      //       {{value}}
+      //   </div>
+      // `,
+      //   data() {
+      //     return {
+      //       fordata: [222, 333, 4444]
+      //     }
+      //   },
+        setup() {
+          const state = reactive({
+            name:'test',
+            count: 2,
+            show: true,
+            fordata: [222, 333, 4444]
+          })
+          // console.log(state);
+          // for (const key in state) {
+          //   // console.log(state[key])
+          // }
+          function increment() {
+            state.name = 'test1';
+            state.count++;
+            state.fordata = [32, 222, 45, 67];
+          }
 
-    //       return {
-    //         state,
-    //         increment
-    //       }
-    //     }
-    //   }
-    //   createApp().mount(RootComponent, '#container')
+          return {
+            state,
+            increment
+          }
+        }
+      }
+      createApp().mount(RootComponent, '#container')
   </script>
 </body>
 

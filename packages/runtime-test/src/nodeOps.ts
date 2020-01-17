@@ -216,6 +216,7 @@ function parentNode(node: TestNode): TestElement | null {
 }
 
 function nextSibling(node: TestNode): TestNode | null {
+  console.log(111, node)
   const parent = node.parentNode
   if (!parent) {
     return null
