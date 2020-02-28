@@ -429,6 +429,3 @@ class MyPromise {
   }
 }
 ```
-
-
-
