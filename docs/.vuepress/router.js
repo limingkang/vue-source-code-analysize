@@ -24,6 +24,15 @@ module.exports = [
     ]
   },
   {
+    title: 'vue-router源码',
+    collapsable: false,
+    children: [
+      ['/vueRouter/start', '整体介绍'],
+      ['/vueRouter/two', '路由原理'],
+      ['/vueRouter/three', '路由守卫的生成']
+    ]
+  },
+  {
     title: '源码实现',
     collapsable: false,
     children: [

@@ -29,7 +29,8 @@ export default new Vuex.Store({
 首先我们看看module-collection.js,这个文件主要导出一个`ModuleCollection`类
 ``` js
 constructor (rawRootModule) {
-  // 主要是注册根模块，我们在之前store的构造函数中曾经使用到this._modules = new ModuleCollection(options)
+  // 主要是注册根模块，我们在之前store的构造函数中曾经使用到
+  // this._modules = new ModuleCollection(options)
   // 使用该方法注册一个根模块然后缓存在this._module中
   this.register([], rawRootModule, false)
 }
@@ -46,6 +47,10 @@ getNamespace (path) {
     module = module.getChild(key)
     return namespace + (module.namespaced ? key + '/' : '')
   }, '')
+}
+//upate方法，就是更新模块从根模块开始递归更换，具体看下面update方法的实现
+update (rawRootModule) {
+  update([], this.root, rawRootModule)
 }
 // 我们看下register函数
 register (path, rawModule, runtime = true) {
@@ -79,10 +84,6 @@ unregister (path) {
     if (!parent.getChild(key).runtime) return
     //利用module中removeChild方法删除该模块，其实就是delete了对象上的一个key
     parent.removeChild(key)
-}
-//upate方法，就是更新模块从根模块开始递归更换，具体看下面update方法的实现
-update (rawRootModule) {
-  update([], this.root, rawRootModule)
 }
 ```
 接下来讲解一下function update的实现
