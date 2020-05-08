@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>vue3响应式源码讲解 | 前端学习</title>
+    <meta name="description" content="前端技术底层实现">
+    
+    
+    <link rel="preload" href="/vue-source-code-analysize/assets/css/0.styles.6bdd7a3f.css" as="style"><link rel="preload" href="/vue-source-code-analysize/assets/js/app.b763ca3b.js" as="script"><link rel="preload" href="/vue-source-code-analysize/assets/js/2.d9983486.js" as="script"><link rel="preload" href="/vue-source-code-analysize/assets/js/18.52b45891.js" as="script"><link rel="prefetch" href="/vue-source-code-analysize/assets/js/10.647aa5c0.js"><link rel="prefetch" href="/vue-source-code-analysize/assets/js/11.c33a6322.js"><link rel="prefetch" href="/vue-source-code-analysize/assets/js/12.fb125ffe.js"><link rel="prefetch" href="/vue-source-code-analysize/assets/js/13.c788a33f.js"><link rel="prefetch" href="/vue-source-code-analysize/assets/js/14.da7cfa92.js"><link rel="prefetch" href="/vue-source-code-analysize/assets/js/15.9e7ba6b6.js"><link rel="prefetch" href="/vue-source-code-analysize/assets/js/16.a6c3c4a5.js"><link rel="prefetch" href="/vue-source-code-analysize/assets/js/17.6199def5.js"><link rel="prefetch" href="/vue-source-code-analysize/assets/js/19.4e9eea1b.js"><link rel="prefetch" href="/vue-source-code-analysize/assets/js/20.daa69c1d.js"><link rel="prefetch" href="/vue-source-code-analysize/assets/js/21.5bc4eca1.js"><link rel="prefetch" href="/vue-source-code-analysize/assets/js/22.2c21b5ba.js"><link rel="prefetch" href="/vue-source-code-analysize/assets/js/23.81195dcf.js"><link rel="prefetch" href="/vue-source-code-analysize/assets/js/24.cb0b0283.js"><link rel="prefetch" href="/vue-source-code-analysize/assets/js/25.aaeb364b.js"><link rel="prefetch" href="/vue-source-code-analysize/assets/js/3.f763d6bc.js"><link rel="prefetch" href="/vue-source-code-analysize/assets/js/4.859fd439.js"><link rel="prefetch" href="/vue-source-code-analysize/assets/js/5.6a87b23f.js"><link rel="prefetch" href="/vue-source-code-analysize/assets/js/6.4b3a66c2.js"><link rel="prefetch" href="/vue-source-code-analysize/assets/js/7.c0610b4a.js"><link rel="prefetch" href="/vue-source-code-analysize/assets/js/8.e2299770.js"><link rel="prefetch" href="/vue-source-code-analysize/assets/js/9.da2cd365.js">
+    <link rel="stylesheet" href="/vue-source-code-analysize/assets/css/0.styles.6bdd7a3f.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container"><header class="navbar"><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/vue-source-code-analysize/" class="home-link router-link-active"><!----> <span class="site-name">前端学习</span></a> <div class="links"><div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><a href="https://github.com/limingkang" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  gitHub
+  <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></div> <!----></nav></div></header> <div class="sidebar-mask"></div> <aside class="sidebar"><nav class="nav-links"><div class="nav-item"><a href="https://github.com/limingkang" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  gitHub
+  <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></div> <!----></nav>  <ul class="sidebar-links"><li><section class="sidebar-group depth-0"><a href="/vue-source-code-analysize/" class="sidebar-heading clickable router-link-active open"><span>vue3源码</span> <!----></a> <ul class="sidebar-links sidebar-group-items"><li><a href="/vue-source-code-analysize/techAccumulate/vue-rfc.html" class="sidebar-link">vue3和2响应式对比</a></li><li><a href="/vue-source-code-analysize/vueReactive/code-analsize.html" class="active sidebar-link">vue3响应式源码讲解</a><ul class="sidebar-sub-headers"><li class="sidebar-sub-header"><a href="/vue-source-code-analysize/vueReactive/code-analsize.html#reactive解析" class="sidebar-link">reactive解析</a></li><li class="sidebar-sub-header"><a href="/vue-source-code-analysize/vueReactive/code-analsize.html#ref解析" class="sidebar-link">ref解析</a></li><li class="sidebar-sub-header"><a href="/vue-source-code-analysize/vueReactive/code-analsize.html#effect方法" class="sidebar-link">effect方法</a></li><li class="sidebar-sub-header"><a href="/vue-source-code-analysize/vueReactive/code-analsize.html#computed方法" class="sidebar-link">computed方法</a></li></ul></li><li><a href="/vue-source-code-analysize/easyInit/init.html" class="sidebar-link">核心渲染函数介绍</a></li><li><a href="/vue-source-code-analysize/render/render.html" class="sidebar-link">渲染流程介绍</a></li><li><a href="/vue-source-code-analysize/domDiff/dom-diff.html" class="sidebar-link">dom diff</a></li><li><a href="/vue-source-code-analysize/compiler/compiler.html" class="sidebar-link">编译函数介绍</a></li></ul></section></li><li><section class="sidebar-group depth-0"><p class="sidebar-heading"><span>vuex源码</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/vue-source-code-analysize/vuex/vuex-start.html" class="sidebar-link">vuex初识</a></li><li><a href="/vue-source-code-analysize/vuex/vuex-module.html" class="sidebar-link">vuex模块部分</a></li><li><a href="/vue-source-code-analysize/vuex/vuex-analyzed.html" class="sidebar-link">初始化挂载vue</a></li><li><a href="/vue-source-code-analysize/vuex/vuex-api.html" class="sidebar-link">实例的api</a></li><li><a href="/vue-source-code-analysize/vuex/vuex-help.html" class="sidebar-link">辅助函数介绍</a></li></ul></section></li><li><section class="sidebar-group depth-0"><p class="sidebar-heading"><span>vue-router源码</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/vue-source-code-analysize/vueRouter/start.html" class="sidebar-link">整体介绍</a></li><li><a href="/vue-source-code-analysize/vueRouter/two.html" class="sidebar-link">路由原理</a></li><li><a href="/vue-source-code-analysize/vueRouter/three.html" class="sidebar-link">路由守卫的生成</a></li></ul></section></li><li><section class="sidebar-group depth-0"><p class="sidebar-heading"><span>源码实现</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/vue-source-code-analysize/webpack/webpack.html" class="sidebar-link">webpack打包原理</a></li><li><a href="/vue-source-code-analysize/promise/promise.html" class="sidebar-link">promise</a></li><li><a href="/vue-source-code-analysize/promise/await.html" class="sidebar-link">async、await原理</a></li><li><a href="/vue-source-code-analysize/promise/class.html" class="sidebar-link">class原理</a></li></ul></section></li></ul> </aside> <main class="page"> <div class="theme-default-content content__default"><h1 id="vue3响应式源码讲解"><a href="#vue3响应式源码讲解" class="header-anchor">#</a> vue3响应式源码讲解</h1> <h2 id="reactive解析"><a href="#reactive解析" class="header-anchor">#</a> reactive解析</h2> <div class="language-js extra-class"><pre class="language-js"><code><span class="token comment">//targetMap 类似 { target -&gt; key -&gt; dep } 的一个Map结构，用于缓存所有响应式对象和依赖收集</span>
+<span class="token keyword">export</span> <span class="token keyword">const</span> targetMap <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">WeakMap</span><span class="token operator">&lt;</span>any<span class="token punctuation">,</span> KeyToDepMap<span class="token operator">&gt;</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token keyword">export</span> <span class="token keyword">function</span> <span class="token function">reactive</span><span class="token punctuation">(</span><span class="token parameter">target<span class="token operator">:</span> object</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token comment">// 如果监听一个readonly代理，那么就直接返回该对象</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>readonlyToRaw<span class="token punctuation">.</span><span class="token function">has</span><span class="token punctuation">(</span>target<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">return</span> target
+  <span class="token punctuation">}</span>
+  <span class="token comment">// target is explicitly marked as readonly by user</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>readonlyValues<span class="token punctuation">.</span><span class="token function">has</span><span class="token punctuation">(</span>target<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token comment">// 创建只读的代理属性方法，其本质也是createReactiveObject方法，只是传的参数不同</span>
+    <span class="token keyword">return</span> <span class="token function">readonly</span><span class="token punctuation">(</span>target<span class="token punctuation">)</span>
+  <span class="token punctuation">}</span>
+  <span class="token keyword">return</span> <span class="token function">createReactiveObject</span><span class="token punctuation">(</span>
+    target<span class="token punctuation">,</span>
+    rawToReactive<span class="token punctuation">,</span>  <span class="token comment">//用来存放代理数据的对象 rawToReactive.set(targert, proxy)</span>
+    reactiveToRaw<span class="token punctuation">,</span>  <span class="token comment">//用来存放原始数据的对象 reactiveToRaw.set(proxy, targert)</span>
+    mutableHandlers<span class="token punctuation">,</span>  <span class="token comment">//代理Object | Array时候</span>
+    mutableCollectionHandlers  <span class="token comment">// 代理Map | Set | WeakMap | WeakSet时候</span>
+  <span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+<span class="token keyword">function</span> <span class="token function">createReactiveObject</span><span class="token punctuation">(</span>
+  <span class="token parameter">target<span class="token operator">:</span> any<span class="token punctuation">,</span>
+  toProxy<span class="token operator">:</span> WeakMap<span class="token operator">&lt;</span>any<span class="token punctuation">,</span> any<span class="token operator">&gt;</span><span class="token punctuation">,</span>
+  toRaw<span class="token operator">:</span> WeakMap<span class="token operator">&lt;</span>any<span class="token punctuation">,</span> any<span class="token operator">&gt;</span><span class="token punctuation">,</span>
+  baseHandlers<span class="token operator">:</span> ProxyHandler<span class="token operator">&lt;</span>any<span class="token operator">&gt;</span><span class="token punctuation">,</span>
+  collectionHandlers<span class="token operator">:</span> ProxyHandler<span class="token operator">&lt;</span>any<span class="token operator">&gt;</span></span>
+<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token function">isObject</span><span class="token punctuation">(</span>target<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>__DEV__<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      console<span class="token punctuation">.</span><span class="token function">warn</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">value cannot be made reactive: </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span><span class="token function">String</span><span class="token punctuation">(</span>target<span class="token punctuation">)</span><span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
+    <span class="token keyword">return</span> target
+  <span class="token punctuation">}</span>
+  <span class="token comment">// 目标对象已经被代理, 因为我们可以不停的reactive值，防止代理同一个对象</span>
+  <span class="token keyword">let</span> observed <span class="token operator">=</span> toProxy<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>target<span class="token punctuation">)</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>observed <span class="token operator">!==</span> <span class="token keyword">void</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">return</span> observed
+  <span class="token punctuation">}</span>
+  <span class="token comment">// 目标对象已经是一个被代理的对象</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>toRaw<span class="token punctuation">.</span><span class="token function">has</span><span class="token punctuation">(</span>target<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">return</span> target
+  <span class="token punctuation">}</span>
+  <span class="token comment">// 是否可被observe</span>
+  <span class="token comment">// 对象符合以下配置:</span>
+  <span class="token comment">//   1. 不是Vue实例</span>
+  <span class="token comment">//   2. 不是虚拟DOM</span>
+  <span class="token comment">//   3. 是属于Object | Array | Map | Set | WeakMap | WeakSet其中一种</span>
+  <span class="token comment">//   4. 不存在于nonReactiveValues</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token function">canObserve</span><span class="token punctuation">(</span>target<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">return</span> target
+  <span class="token punctuation">}</span>
+  <span class="token comment">// 如果目标对象是Map | Set | WeakMap | WeakSet其中一种，则使用collectionHandlers</span>
+  <span class="token keyword">const</span> handlers <span class="token operator">=</span> collectionTypes<span class="token punctuation">.</span><span class="token function">has</span><span class="token punctuation">(</span>target<span class="token punctuation">.</span>constructor<span class="token punctuation">)</span>
+    <span class="token operator">?</span> collectionHandlers
+    <span class="token operator">:</span> baseHandlers
+  observed <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Proxy</span><span class="token punctuation">(</span>target<span class="token punctuation">,</span> handlers<span class="token punctuation">)</span>
+  <span class="token comment">// 保存proxy对象和原始对象</span>
+  toProxy<span class="token punctuation">.</span><span class="token function">set</span><span class="token punctuation">(</span>target<span class="token punctuation">,</span> observed<span class="token punctuation">)</span>
+  toRaw<span class="token punctuation">.</span><span class="token function">set</span><span class="token punctuation">(</span>observed<span class="token punctuation">,</span> target<span class="token punctuation">)</span>
+  <span class="token comment">// 这里只是在targetMap保存该对象，之后在依赖收集track时候才给其对应的map赋值</span>
+  <span class="token comment">// map形式是set(属性对应的键 , new set()), 而set里面就是所有收集的effect</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>targetMap<span class="token punctuation">.</span><span class="token function">has</span><span class="token punctuation">(</span>target<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    targetMap<span class="token punctuation">.</span><span class="token function">set</span><span class="token punctuation">(</span>target<span class="token punctuation">,</span> <span class="token keyword">new</span> <span class="token class-name">Map</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+  <span class="token punctuation">}</span>
+  <span class="token keyword">return</span> observed
+<span class="token punctuation">}</span>
+</code></pre></div><p>如果目标对象是Map | Set | WeakMap | WeakSet的话，由于他们能使用的方法是一定的，所有
+只需要配置其get属性值即可, 使用collectionHandlers中方法配置</p> <div class="language-js extra-class"><pre class="language-js"><code><span class="token comment">// 穷举了需要的属性，并且每个方法都有新的实现</span>
+<span class="token keyword">const</span> mutableInstrumentations<span class="token operator">:</span> any <span class="token operator">=</span> <span class="token punctuation">{</span>
+  <span class="token keyword">get</span><span class="token punctuation">(</span>key<span class="token operator">:</span> any<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">return</span> <span class="token keyword">get</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">,</span> key<span class="token punctuation">,</span> toReactive<span class="token punctuation">)</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token keyword">get</span> <span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">return</span> <span class="token function">size</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  has<span class="token punctuation">,</span>
+  add<span class="token punctuation">,</span>
+  <span class="token keyword">set</span><span class="token punctuation">,</span>
+  <span class="token keyword">delete</span><span class="token operator">:</span> deleteEntry<span class="token punctuation">,</span>
+  clear<span class="token punctuation">,</span>
+  forEach<span class="token operator">:</span> <span class="token function">createForEach</span><span class="token punctuation">(</span><span class="token boolean">false</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+<span class="token comment">// 这里就看个add方法的实现</span>
+<span class="token comment">// ts就是如此如果要使用this上下文，就得传入，最终编译之后会去掉this参数function add(value){}</span>
+<span class="token keyword">function</span> <span class="token function">add</span><span class="token punctuation">(</span><span class="token parameter"><span class="token keyword">this</span><span class="token operator">:</span> any<span class="token punctuation">,</span> value<span class="token operator">:</span> any</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token comment">// 如果值或者上下文是reactive化了就返回对应值否则返回自身</span>
+  value <span class="token operator">=</span> <span class="token function">toRaw</span><span class="token punctuation">(</span>value<span class="token punctuation">)</span>
+  <span class="token keyword">const</span> target <span class="token operator">=</span> <span class="token function">toRaw</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span>
+  <span class="token keyword">const</span> proto<span class="token operator">:</span> any <span class="token operator">=</span> Reflect<span class="token punctuation">.</span><span class="token function">getPrototypeOf</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span>
+  <span class="token comment">// 从原型上找到此方法触发</span>
+  <span class="token keyword">const</span> hadKey <span class="token operator">=</span> proto<span class="token punctuation">.</span><span class="token function">has</span><span class="token punctuation">.</span><span class="token function">call</span><span class="token punctuation">(</span>target<span class="token punctuation">,</span> value<span class="token punctuation">)</span>
+  <span class="token keyword">const</span> result <span class="token operator">=</span> proto<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">.</span><span class="token function">call</span><span class="token punctuation">(</span>target<span class="token punctuation">,</span> value<span class="token punctuation">)</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>hadKey<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token comment">// 触发依赖</span>
+    <span class="token comment">/* istanbul ignore else */</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>__DEV__<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token function">trigger</span><span class="token punctuation">(</span>target<span class="token punctuation">,</span> OperationTypes<span class="token punctuation">.</span><span class="token constant">ADD</span><span class="token punctuation">,</span> value<span class="token punctuation">,</span> <span class="token punctuation">{</span> value <span class="token punctuation">}</span><span class="token punctuation">)</span>
+    <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+      <span class="token function">trigger</span><span class="token punctuation">(</span>target<span class="token punctuation">,</span> OperationTypes<span class="token punctuation">.</span><span class="token constant">ADD</span><span class="token punctuation">,</span> value<span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+  <span class="token keyword">return</span> result
+<span class="token punctuation">}</span>
+<span class="token keyword">function</span> <span class="token function">createInstrumentationGetter</span><span class="token punctuation">(</span><span class="token parameter">instrumentations<span class="token operator">:</span> any</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">return</span> <span class="token keyword">function</span> <span class="token function">getInstrumented</span><span class="token punctuation">(</span>
+    <span class="token parameter">target<span class="token operator">:</span> any<span class="token punctuation">,</span>
+    key<span class="token operator">:</span> string <span class="token operator">|</span> symbol<span class="token punctuation">,</span>
+    receiver<span class="token operator">:</span> any</span>
+  <span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token comment">// 是对应实例</span>
+    target <span class="token operator">=</span>
+      <span class="token function">hasOwn</span><span class="token punctuation">(</span>instrumentations<span class="token punctuation">,</span> key<span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span> key <span class="token keyword">in</span> target <span class="token operator">?</span> instrumentations <span class="token operator">:</span> target
+    <span class="token keyword">return</span> Reflect<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>target<span class="token punctuation">,</span> key<span class="token punctuation">,</span> receiver<span class="token punctuation">)</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+<span class="token comment">// 这里只监听了获取值即可</span>
+<span class="token keyword">export</span> <span class="token keyword">const</span> mutableCollectionHandlers<span class="token operator">:</span> ProxyHandler<span class="token operator">&lt;</span>any<span class="token operator">&gt;</span> <span class="token operator">=</span> <span class="token punctuation">{</span>
+  <span class="token keyword">get</span><span class="token operator">:</span> <span class="token function">createInstrumentationGetter</span><span class="token punctuation">(</span>mutableInstrumentations<span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+</code></pre></div><p>如果是普通的object或者array对象则使用baseHandlers.ts中mutableHandlers处理</p> <div class="language-js extra-class"><pre class="language-js"><code><span class="token keyword">export</span> <span class="token keyword">const</span> mutableHandlers<span class="token operator">:</span> ProxyHandler<span class="token operator">&lt;</span>any<span class="token operator">&gt;</span> <span class="token operator">=</span> <span class="token punctuation">{</span>
+  <span class="token keyword">get</span><span class="token operator">:</span> <span class="token function">createGetter</span><span class="token punctuation">(</span><span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+  <span class="token keyword">set</span><span class="token punctuation">,</span>
+  deleteProperty<span class="token punctuation">,</span>
+  has<span class="token punctuation">,</span>
+  ownKeys
+<span class="token punctuation">}</span>
+<span class="token comment">// 可以看到这里判断了 Reflect 返回的数据是否还是对象，如果是对象，则再走一次 proxy ，从而获得了对对</span>
+<span class="token comment">// 象内部的侦测, 这样就解决了只能代理一层的问题。注意proxy在这里的处理并不是递归。而是在使用这个数据</span>
+<span class="token comment">// 的时候会返回多个res, 这时候执行多次reactive, 在vue 2.x中先递归整个data，并为每一个属性设</span>
+<span class="token comment">// 置set和get。vue3中使用proxy则在使用数据时才设置set和get.并且，每一次的 proxy 数据，都会</span>
+<span class="token comment">// 保存在 Map 中，访问时会直接从中查找，从而提高性能。</span>
+<span class="token keyword">function</span> <span class="token function">createGetter</span><span class="token punctuation">(</span><span class="token parameter">isReadonly<span class="token operator">:</span> boolean</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">return</span> <span class="token keyword">function</span> <span class="token keyword">get</span><span class="token punctuation">(</span><span class="token parameter">target<span class="token operator">:</span> any<span class="token punctuation">,</span> key<span class="token operator">:</span> string <span class="token operator">|</span> symbol<span class="token punctuation">,</span> receiver<span class="token operator">:</span> any</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">const</span> res <span class="token operator">=</span> Reflect<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>target<span class="token punctuation">,</span> key<span class="token punctuation">,</span> receiver<span class="token punctuation">)</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">isSymbol</span><span class="token punctuation">(</span>key<span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span> builtInSymbols<span class="token punctuation">.</span><span class="token function">has</span><span class="token punctuation">(</span>key<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token keyword">return</span> res
+    <span class="token punctuation">}</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">isRef</span><span class="token punctuation">(</span>res<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token keyword">return</span> res<span class="token punctuation">.</span>value
+    <span class="token punctuation">}</span>
+    <span class="token function">track</span><span class="token punctuation">(</span>target<span class="token punctuation">,</span> OperationTypes<span class="token punctuation">.</span><span class="token constant">GET</span><span class="token punctuation">,</span> key<span class="token punctuation">)</span>
+    <span class="token keyword">return</span> <span class="token function">isObject</span><span class="token punctuation">(</span>res<span class="token punctuation">)</span>
+      <span class="token operator">?</span> isReadonly
+        <span class="token operator">?</span> <span class="token comment">// 如果取到的值是个对象，将对象再代理包装一下</span>
+          <span class="token comment">// Proxy只能代理对象第一层级</span>
+          <span class="token function">readonly</span><span class="token punctuation">(</span>res<span class="token punctuation">)</span>
+        <span class="token operator">:</span> <span class="token function">reactive</span><span class="token punctuation">(</span>res<span class="token punctuation">)</span>
+      <span class="token operator">:</span> res
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+<span class="token comment">// 来看一个比较重要的set方法</span>
+<span class="token keyword">function</span> <span class="token keyword">set</span><span class="token punctuation">(</span>
+  <span class="token parameter">target<span class="token operator">:</span> any<span class="token punctuation">,</span>
+  key<span class="token operator">:</span> string <span class="token operator">|</span> symbol<span class="token punctuation">,</span>
+  value<span class="token operator">:</span> any<span class="token punctuation">,</span>
+  receiver<span class="token operator">:</span> any</span>
+<span class="token punctuation">)</span><span class="token operator">:</span> boolean <span class="token punctuation">{</span>
+  value <span class="token operator">=</span> <span class="token function">toRaw</span><span class="token punctuation">(</span>value<span class="token punctuation">)</span>
+  <span class="token keyword">const</span> oldValue <span class="token operator">=</span> target<span class="token punctuation">[</span>key<span class="token punctuation">]</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">isRef</span><span class="token punctuation">(</span>oldValue<span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span> <span class="token operator">!</span><span class="token function">isRef</span><span class="token punctuation">(</span>value<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    oldValue<span class="token punctuation">.</span>value <span class="token operator">=</span> value
+    <span class="token keyword">return</span> <span class="token boolean">true</span>
+  <span class="token punctuation">}</span>
+  <span class="token comment">// 是否是自身属性</span>
+  <span class="token keyword">const</span> hadKey <span class="token operator">=</span> <span class="token function">hasOwn</span><span class="token punctuation">(</span>target<span class="token punctuation">,</span> key<span class="token punctuation">)</span>
+  <span class="token comment">// 设置原始对象的值,返回的boolean值表示设置是否成功</span>
+  <span class="token keyword">const</span> result <span class="token operator">=</span> Reflect<span class="token punctuation">.</span><span class="token function">set</span><span class="token punctuation">(</span>target<span class="token punctuation">,</span> key<span class="token punctuation">,</span> value<span class="token punctuation">,</span> receiver<span class="token punctuation">)</span>
+  <span class="token comment">// 如果receiver存在于taRaw里，receiver是代理对象本身new proxy(target返回值)</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>target <span class="token operator">===</span> <span class="token function">toRaw</span><span class="token punctuation">(</span>receiver<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token comment">/* istanbul ignore else */</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>__DEV__<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token keyword">const</span> extraInfo <span class="token operator">=</span> <span class="token punctuation">{</span> oldValue<span class="token punctuation">,</span> newValue<span class="token operator">:</span> value <span class="token punctuation">}</span>
+      <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>hadKey<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token function">trigger</span><span class="token punctuation">(</span>target<span class="token punctuation">,</span> OperationTypes<span class="token punctuation">.</span><span class="token constant">ADD</span><span class="token punctuation">,</span> key<span class="token punctuation">,</span> extraInfo<span class="token punctuation">)</span>
+      <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>value <span class="token operator">!==</span> oldValue<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token function">trigger</span><span class="token punctuation">(</span>target<span class="token punctuation">,</span> OperationTypes<span class="token punctuation">.</span><span class="token constant">SET</span><span class="token punctuation">,</span> key<span class="token punctuation">,</span> extraInfo<span class="token punctuation">)</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+      <span class="token comment">// 如果没有属性值，则执行add方法</span>
+      <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>hadKey<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token function">trigger</span><span class="token punctuation">(</span>target<span class="token punctuation">,</span> OperationTypes<span class="token punctuation">.</span><span class="token constant">ADD</span><span class="token punctuation">,</span> key<span class="token punctuation">)</span>
+      <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>value <span class="token operator">!==</span> oldValue<span class="token punctuation">)</span> <span class="token punctuation">{</span>  <span class="token comment">//否则如果新旧值不同，则执行SET方法</span>
+        <span class="token function">trigger</span><span class="token punctuation">(</span>target<span class="token punctuation">,</span> OperationTypes<span class="token punctuation">.</span><span class="token constant">SET</span><span class="token punctuation">,</span> key<span class="token punctuation">)</span>
+      <span class="token punctuation">}</span>
+      <span class="token comment">// 通过以上判断可以解决数组重复执行set问题</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+  <span class="token comment">// 必须return是否设置成功否则报错</span>
+  <span class="token keyword">return</span> result
+<span class="token punctuation">}</span>
+<span class="token comment">// let data = ['a', 'b']</span>
+<span class="token comment">// let r = reactive(data)</span>
+<span class="token comment">// r.push('c')</span>
+<span class="token comment">// // 打印一次 trigger add</span>
+<span class="token comment">// 执行r.push('c'), 会触发两次set, 第一次是设置新值'c', 第二次修改数组的length</span>
+<span class="token comment">// 当第一次触发时，这时侯key是2, hadKey为false, 所以打印trigger add</span>
+<span class="token comment">// 当第二次触发时，这时候key是length, hadKey为true, oldValue为3, value为3，所以只执行一次trigger</span>
+</code></pre></div><h2 id="ref解析"><a href="#ref解析" class="header-anchor">#</a> ref解析</h2> <p>只可以监听Object | Array | Map | Set | WeakMap | WeakSet这几种, Proxy也没法劫持基本
+数据).那我们如果就想让一个基本数据变为响应式,就把传入的基本数据包装成对象</p> <div class="language-js extra-class"><pre class="language-js"><code><span class="token comment">// const count = ref(0)</span>
+<span class="token comment">// console.log(count.value) // 0</span>
+
+<span class="token comment">// count.value++</span>
+<span class="token comment">// console.log(count.value) // 1</span>
+<span class="token comment">// ----------</span>
+<span class="token comment">// const a = ref(1)</span>
+<span class="token comment">// effect(() =&gt; {</span>
+<span class="token comment">//   console.log(a.value)</span>
+<span class="token comment">// })</span>
+<span class="token comment">// a.value = 2</span>
+<span class="token keyword">const</span> convert <span class="token operator">=</span> <span class="token punctuation">(</span>val<span class="token operator">:</span> any<span class="token punctuation">)</span><span class="token operator">:</span> <span class="token parameter">any</span> <span class="token operator">=&gt;</span> <span class="token punctuation">(</span><span class="token function">isObject</span><span class="token punctuation">(</span>val<span class="token punctuation">)</span> <span class="token operator">?</span> <span class="token function">reactive</span><span class="token punctuation">(</span>val<span class="token punctuation">)</span> <span class="token operator">:</span> val<span class="token punctuation">)</span>
+<span class="token keyword">export</span> <span class="token keyword">function</span> <span class="token function">ref</span><span class="token punctuation">(</span><span class="token parameter">raw<span class="token operator">:</span> any</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">isRef</span><span class="token punctuation">(</span>raw<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">return</span> raw
+  <span class="token punctuation">}</span>
+  raw <span class="token operator">=</span> <span class="token function">convert</span><span class="token punctuation">(</span>raw<span class="token punctuation">)</span>
+  <span class="token keyword">const</span> v <span class="token operator">=</span> <span class="token punctuation">{</span>
+    <span class="token punctuation">[</span>refSymbol<span class="token punctuation">]</span><span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
+    <span class="token keyword">get</span> <span class="token function">value</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token comment">// 注意！ 这里ref绑定的key为‘’(空字符串),这个是可以的因为用的是Map存储</span>
+      <span class="token function">track</span><span class="token punctuation">(</span>v<span class="token punctuation">,</span> OperationTypes<span class="token punctuation">.</span><span class="token constant">GET</span><span class="token punctuation">,</span> <span class="token string">''</span><span class="token punctuation">)</span>
+      <span class="token keyword">return</span> raw
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token keyword">set</span> <span class="token function">value</span><span class="token punctuation">(</span><span class="token parameter">newVal</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      raw <span class="token operator">=</span> <span class="token function">convert</span><span class="token punctuation">(</span>newVal<span class="token punctuation">)</span>
+      <span class="token function">trigger</span><span class="token punctuation">(</span>v<span class="token punctuation">,</span> OperationTypes<span class="token punctuation">.</span><span class="token constant">SET</span><span class="token punctuation">,</span> <span class="token string">''</span><span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+  <span class="token keyword">return</span> v <span class="token keyword">as</span> Ref
+<span class="token punctuation">}</span>
+</code></pre></div><p>还有一个使用场景,用来保持响应式</p> <div class="language-js extra-class"><pre class="language-js"><code><span class="token comment">// 这里的文件的作用大致如下：</span>
+<span class="token comment">// 我们在对象解构和扩散运算符时, 对原对象的引用都会丢失.同样对于响应式的数据:</span>
+<span class="token keyword">function</span> <span class="token function">useMousePosition</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> pos <span class="token operator">=</span> <span class="token function">reactive</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+    x<span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+    y<span class="token operator">:</span> <span class="token number">0</span>
+  <span class="token punctuation">}</span><span class="token punctuation">)</span>
+  <span class="token comment">// ...</span>
+  <span class="token keyword">return</span> pos
+<span class="token punctuation">}</span>
+<span class="token comment">// consuming component</span>
+<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token punctuation">{</span>
+  <span class="token function">setup</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token comment">// 响应式丢失!</span>
+    <span class="token keyword">const</span> <span class="token punctuation">{</span> x<span class="token punctuation">,</span> y <span class="token punctuation">}</span> <span class="token operator">=</span> <span class="token function">useMousePosition</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token keyword">return</span> <span class="token punctuation">{</span>
+      x<span class="token punctuation">,</span>
+      y
+    <span class="token punctuation">}</span>
+    <span class="token comment">// 响应式丢失!------------------</span>
+    <span class="token keyword">return</span> <span class="token punctuation">{</span>
+      <span class="token operator">...</span><span class="token function">useMousePosition</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
+    <span class="token comment">// 这是唯一能够保持响应式的办法,必须返回原先的引用--------------</span>
+    <span class="token keyword">return</span> <span class="token punctuation">{</span>
+      pos<span class="token operator">:</span> <span class="token function">useMousePosition</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+<span class="token comment">// Vue3为我们提供了一个函数便是用于这种情况：</span>
+<span class="token keyword">function</span> <span class="token function">useMousePosition</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> pos <span class="token operator">=</span> <span class="token function">reactive</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+    x<span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+    y<span class="token operator">:</span> <span class="token number">0</span>
+  <span class="token punctuation">}</span><span class="token punctuation">)</span>
+  <span class="token keyword">return</span> Vue<span class="token punctuation">.</span><span class="token function">toRefs</span><span class="token punctuation">(</span>pos<span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+<span class="token comment">// x &amp; y 现在就是ref类型了，就可以像上面那样直接返回并且依旧保持响应式</span>
+<span class="token keyword">const</span> <span class="token punctuation">{</span> x<span class="token punctuation">,</span> y <span class="token punctuation">}</span> <span class="token operator">=</span> <span class="token function">useMousePosition</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+<span class="token comment">// 我们来看看toRefs方式的使用</span>
+<span class="token keyword">export</span> <span class="token keyword">function</span> toRefs<span class="token operator">&lt;</span><span class="token constant">T</span> <span class="token keyword">extends</span> <span class="token class-name">object</span><span class="token operator">&gt;</span><span class="token punctuation">(</span>
+  object<span class="token operator">:</span> <span class="token constant">T</span>
+<span class="token punctuation">)</span><span class="token operator">:</span> <span class="token punctuation">{</span> <span class="token punctuation">[</span><span class="token constant">K</span> <span class="token keyword">in</span> keyof <span class="token constant">T</span><span class="token punctuation">]</span><span class="token operator">:</span> Ref<span class="token operator">&lt;</span><span class="token constant">T</span><span class="token punctuation">[</span><span class="token constant">K</span><span class="token punctuation">]</span><span class="token operator">&gt;</span> <span class="token punctuation">}</span> <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> ret<span class="token operator">:</span> any <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+  <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">const</span> key <span class="token keyword">in</span> object<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    ret<span class="token punctuation">[</span>key<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token function">toProxyRef</span><span class="token punctuation">(</span>object<span class="token punctuation">,</span> key<span class="token punctuation">)</span>
+  <span class="token punctuation">}</span>
+  <span class="token keyword">return</span> ret
+<span class="token punctuation">}</span>
+<span class="token comment">// 该方法给toRefs方法使用，用来保持响应式不丢失，下面代码可详细记录</span>
+<span class="token keyword">function</span> toProxyRef<span class="token operator">&lt;</span><span class="token constant">T</span> <span class="token keyword">extends</span> <span class="token class-name">object</span><span class="token punctuation">,</span> <span class="token constant">K</span> <span class="token keyword">extends</span> <span class="token class-name">keyof</span> <span class="token constant">T</span><span class="token operator">&gt;</span><span class="token punctuation">(</span>
+  object<span class="token operator">:</span> <span class="token constant">T</span><span class="token punctuation">,</span>
+  key<span class="token operator">:</span> <span class="token constant">K</span>
+<span class="token punctuation">)</span><span class="token operator">:</span> Ref<span class="token operator">&lt;</span><span class="token constant">T</span><span class="token punctuation">[</span><span class="token constant">K</span><span class="token punctuation">]</span><span class="token operator">&gt;</span> <span class="token punctuation">{</span>
+  <span class="token keyword">return</span> <span class="token punctuation">{</span>
+    <span class="token punctuation">[</span>refSymbol<span class="token punctuation">]</span><span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
+    <span class="token keyword">get</span> <span class="token function">value</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">:</span> any <span class="token punctuation">{</span>
+      <span class="token comment">//让他触发原对象的响应式</span>
+      <span class="token keyword">return</span> object<span class="token punctuation">[</span>key<span class="token punctuation">]</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token keyword">set</span> <span class="token function">value</span><span class="token punctuation">(</span><span class="token parameter">newVal</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      object<span class="token punctuation">[</span>key<span class="token punctuation">]</span> <span class="token operator">=</span> newVal
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre></div><h2 id="effect方法"><a href="#effect方法" class="header-anchor">#</a> effect方法</h2> <p>运行effect方法就是创建一个数据响应系统的依赖</p> <div class="language-js extra-class"><pre class="language-js"><code><span class="token keyword">export</span> <span class="token keyword">function</span> effect<span class="token operator">&lt;</span><span class="token constant">T</span> <span class="token operator">=</span> any<span class="token operator">&gt;</span><span class="token punctuation">(</span>
+  <span class="token function-variable function">fn</span><span class="token operator">:</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token constant">T</span><span class="token punctuation">,</span>
+  options<span class="token operator">:</span> ReactiveEffectOptions <span class="token operator">=</span> <span class="token constant">EMPTY_OBJ</span>
+<span class="token punctuation">)</span><span class="token operator">:</span> ReactiveEffect<span class="token operator">&lt;</span><span class="token constant">T</span><span class="token operator">&gt;</span> <span class="token punctuation">{</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">isEffect</span><span class="token punctuation">(</span>fn<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    fn <span class="token operator">=</span> fn<span class="token punctuation">.</span>raw
+  <span class="token punctuation">}</span>
+  <span class="token keyword">const</span> effect <span class="token operator">=</span> <span class="token function">createReactiveEffect</span><span class="token punctuation">(</span>fn<span class="token punctuation">,</span> options<span class="token punctuation">)</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>options<span class="token punctuation">.</span>lazy<span class="token punctuation">)</span> <span class="token punctuation">{</span> <span class="token comment">//表示是否立即执行fn函数</span>
+    <span class="token function">effect</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+  <span class="token punctuation">}</span>
+  <span class="token keyword">return</span> effect
+<span class="token punctuation">}</span>
+<span class="token keyword">function</span> createReactiveEffect<span class="token operator">&lt;</span><span class="token constant">T</span> <span class="token operator">=</span> any<span class="token operator">&gt;</span><span class="token punctuation">(</span>
+  <span class="token function-variable function">fn</span><span class="token operator">:</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token constant">T</span><span class="token punctuation">,</span>
+  options<span class="token operator">:</span> ReactiveEffectOptions
+<span class="token punctuation">)</span><span class="token operator">:</span> ReactiveEffect<span class="token operator">&lt;</span><span class="token constant">T</span><span class="token operator">&gt;</span> <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> <span class="token function-variable function">effect</span> <span class="token operator">=</span> <span class="token keyword">function</span> <span class="token function">reactiveEffect</span><span class="token punctuation">(</span><span class="token parameter"><span class="token operator">...</span>args<span class="token operator">:</span> any<span class="token punctuation">[</span><span class="token punctuation">]</span></span><span class="token punctuation">)</span><span class="token operator">:</span> any <span class="token punctuation">{</span>
+    <span class="token keyword">return</span> <span class="token function">run</span><span class="token punctuation">(</span>effect<span class="token punctuation">,</span> fn<span class="token punctuation">,</span> args<span class="token punctuation">)</span>
+  <span class="token punctuation">}</span> <span class="token keyword">as</span> ReactiveEffect
+  effect<span class="token punctuation">[</span>effectSymbol<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token boolean">true</span>
+  effect<span class="token punctuation">.</span>active <span class="token operator">=</span> <span class="token boolean">true</span>
+  effect<span class="token punctuation">.</span>raw <span class="token operator">=</span> fn
+  effect<span class="token punctuation">.</span>scheduler <span class="token operator">=</span> options<span class="token punctuation">.</span>scheduler
+  effect<span class="token punctuation">.</span>onTrack <span class="token operator">=</span> options<span class="token punctuation">.</span>onTrack
+  effect<span class="token punctuation">.</span>onTrigger <span class="token operator">=</span> options<span class="token punctuation">.</span>onTrigger
+  effect<span class="token punctuation">.</span>onStop <span class="token operator">=</span> options<span class="token punctuation">.</span>onStop
+  effect<span class="token punctuation">.</span>computed <span class="token operator">=</span> options<span class="token punctuation">.</span>computed
+  effect<span class="token punctuation">.</span>deps <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+  <span class="token keyword">return</span> effect
+<span class="token punctuation">}</span>
+<span class="token comment">// 运行effect实际上就是运行此方法</span>
+<span class="token keyword">function</span> <span class="token function">run</span><span class="token punctuation">(</span><span class="token parameter">effect<span class="token operator">:</span> ReactiveEffect<span class="token punctuation">,</span> fn<span class="token operator">:</span> Function<span class="token punctuation">,</span> args<span class="token operator">:</span> any<span class="token punctuation">[</span><span class="token punctuation">]</span></span><span class="token punctuation">)</span><span class="token operator">:</span> any <span class="token punctuation">{</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>effect<span class="token punctuation">.</span>active<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">return</span> <span class="token function">fn</span><span class="token punctuation">(</span><span class="token operator">...</span>args<span class="token punctuation">)</span>
+  <span class="token punctuation">}</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>activeReactiveEffectStack<span class="token punctuation">.</span><span class="token function">includes</span><span class="token punctuation">(</span>effect<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token comment">//试想一个场景:A组件与B组件是通过v - if来控制展示, 当A组件首先渲染之后, 所对应的的数据</span>
+    <span class="token comment">//就会采集对应的依赖, 此时更改v - if条件, 渲染了B组件, 若是B组件此时更改了A组件里的变</span>
+    <span class="token comment">//量, 若是A组件的依赖没有被清除掉, 那么会产生不必要的依赖调用, 所以Vue要事先清除掉所有</span>
+    <span class="token comment">//的依赖, 确保依赖始终是最新的</span>
+    <span class="token comment">// 实际上就是清空effect.deps</span>
+    <span class="token function">cleanup</span><span class="token punctuation">(</span>effect<span class="token punctuation">)</span>
+    <span class="token comment">// 初始化mount的时候会执行effect函数</span>
+    <span class="token keyword">try</span> <span class="token punctuation">{</span>
+      activeReactiveEffectStack<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span>effect<span class="token punctuation">)</span>
+      <span class="token keyword">return</span> <span class="token function">fn</span><span class="token punctuation">(</span><span class="token operator">...</span>args<span class="token punctuation">)</span>  
+      <span class="token comment">//这里函数里有方法可以触发track方法的，例如取值等会触发track，那么在track方法中就可以通过</span>
+      <span class="token comment">// activeReactiveEffectStack来取到现在活跃运行的effect</span>
+    <span class="token punctuation">}</span> <span class="token keyword">finally</span> <span class="token punctuation">{</span>
+      <span class="token comment">// 最终要清楚当前effect</span>
+      activeReactiveEffectStack<span class="token punctuation">.</span><span class="token function">pop</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre></div><p>现在我们来看看依赖的收集和触发方法</p> <div class="language-js extra-class"><pre class="language-js"><code><span class="token comment">// 依赖收集方法</span>
+<span class="token keyword">export</span> <span class="token keyword">function</span> <span class="token function">track</span><span class="token punctuation">(</span>
+  <span class="token parameter">target<span class="token operator">:</span> any<span class="token punctuation">,</span>
+  type<span class="token operator">:</span> OperationTypes<span class="token punctuation">,</span>
+  key<span class="token operator">?</span><span class="token operator">:</span> string <span class="token operator">|</span> symbol</span>
+<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>shouldTrack<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">return</span>
+  <span class="token punctuation">}</span>
+  <span class="token comment">// 只有在依赖收集阶段才进行依赖收集</span>
+  <span class="token comment">// 除了render，其他场景也可能会触发Proxy的get，但不需要进行依赖收集</span>
+  <span class="token comment">// activeReactiveEffectStack栈顶包装了当前render的组件的mount和update的逻辑</span>
+  <span class="token keyword">const</span> effect <span class="token operator">=</span> activeReactiveEffectStack<span class="token punctuation">[</span>activeReactiveEffectStack<span class="token punctuation">.</span>length <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">]</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>effect<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">return</span>
+  <span class="token punctuation">}</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>type <span class="token operator">===</span> OperationTypes<span class="token punctuation">.</span><span class="token constant">ITERATE</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    key <span class="token operator">=</span> <span class="token constant">ITERATE_KEY</span>
+  <span class="token punctuation">}</span>
+  <span class="token keyword">let</span> depsMap <span class="token operator">=</span> targetMap<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>target<span class="token punctuation">)</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>depsMap <span class="token operator">===</span> <span class="token keyword">void</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    targetMap<span class="token punctuation">.</span><span class="token function">set</span><span class="token punctuation">(</span>target<span class="token punctuation">,</span> <span class="token punctuation">(</span>depsMap <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Map</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+  <span class="token punctuation">}</span>
+  <span class="token keyword">let</span> dep <span class="token operator">=</span> depsMap<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>key<span class="token operator">!</span><span class="token punctuation">)</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>dep <span class="token operator">===</span> <span class="token keyword">void</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    depsMap<span class="token punctuation">.</span><span class="token function">set</span><span class="token punctuation">(</span>key<span class="token operator">!</span><span class="token punctuation">,</span> <span class="token punctuation">(</span>dep <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Set</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+  <span class="token punctuation">}</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>dep<span class="token punctuation">.</span><span class="token function">has</span><span class="token punctuation">(</span>effect<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token comment">// 这里将effect作为依赖，缓存到依赖列表</span>
+    <span class="token comment">//不止dep添加了, effect也添加了是为了给cleanup用来清除所有依赖用的</span>
+    dep<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>effect<span class="token punctuation">)</span>
+    effect<span class="token punctuation">.</span>deps<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span>dep<span class="token punctuation">)</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>__DEV__ <span class="token operator">&amp;&amp;</span> effect<span class="token punctuation">.</span>onTrack<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      effect<span class="token punctuation">.</span><span class="token function">onTrack</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+        effect<span class="token punctuation">,</span>
+        target<span class="token punctuation">,</span>
+        type<span class="token punctuation">,</span>
+        key
+      <span class="token punctuation">}</span><span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+<span class="token keyword">export</span> <span class="token keyword">function</span> <span class="token function">trigger</span><span class="token punctuation">(</span>
+  <span class="token parameter">target<span class="token operator">:</span> any<span class="token punctuation">,</span>
+  type<span class="token operator">:</span> OperationTypes<span class="token punctuation">,</span>
+  key<span class="token operator">?</span><span class="token operator">:</span> string <span class="token operator">|</span> symbol<span class="token punctuation">,</span>
+  extraInfo<span class="token operator">?</span><span class="token operator">:</span> any</span>
+<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token comment">// 获取对应target在track过程中缓存的依赖</span>
+  <span class="token keyword">const</span> depsMap <span class="token operator">=</span> targetMap<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>target<span class="token punctuation">)</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>depsMap <span class="token operator">===</span> <span class="token keyword">void</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token comment">// never been tracked</span>
+    <span class="token keyword">return</span>
+  <span class="token punctuation">}</span>
+  <span class="token comment">// 保存所有effect</span>
+  <span class="token keyword">const</span> effects <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Set</span><span class="token operator">&lt;</span>ReactiveEffect<span class="token operator">&gt;</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+  <span class="token keyword">const</span> computedRunners <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Set</span><span class="token operator">&lt;</span>ReactiveEffect<span class="token operator">&gt;</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>type <span class="token operator">===</span> OperationTypes<span class="token punctuation">.</span><span class="token constant">CLEAR</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token comment">// collection being cleared, trigger all effects for target</span>
+    depsMap<span class="token punctuation">.</span><span class="token function">forEach</span><span class="token punctuation">(</span><span class="token parameter">dep</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+      <span class="token function">addRunners</span><span class="token punctuation">(</span>effects<span class="token punctuation">,</span> computedRunners<span class="token punctuation">,</span> dep<span class="token punctuation">)</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span>
+  <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+    <span class="token comment">// schedule runs for SET | ADD | DELETE</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>key <span class="token operator">!==</span> <span class="token keyword">void</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token function">addRunners</span><span class="token punctuation">(</span>effects<span class="token punctuation">,</span> computedRunners<span class="token punctuation">,</span> depsMap<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>key<span class="token punctuation">)</span><span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
+    <span class="token comment">// also run for iteration key on ADD | DELETE</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>type <span class="token operator">===</span> OperationTypes<span class="token punctuation">.</span><span class="token constant">ADD</span> <span class="token operator">||</span> type <span class="token operator">===</span> OperationTypes<span class="token punctuation">.</span><span class="token constant">DELETE</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token keyword">const</span> iterationKey <span class="token operator">=</span> Array<span class="token punctuation">.</span><span class="token function">isArray</span><span class="token punctuation">(</span>target<span class="token punctuation">)</span> <span class="token operator">?</span> <span class="token string">'length'</span> <span class="token operator">:</span> <span class="token constant">ITERATE_KEY</span>
+      <span class="token function">addRunners</span><span class="token punctuation">(</span>effects<span class="token punctuation">,</span> computedRunners<span class="token punctuation">,</span> depsMap<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>iterationKey<span class="token punctuation">)</span><span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+  <span class="token keyword">const</span> <span class="token function-variable function">run</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token parameter">effect<span class="token operator">:</span> ReactiveEffect</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+    <span class="token comment">// 有个异步调度的过程，nextTick</span>
+    <span class="token function">scheduleRun</span><span class="token punctuation">(</span>effect<span class="token punctuation">,</span> target<span class="token punctuation">,</span> type<span class="token punctuation">,</span> key<span class="token punctuation">,</span> extraInfo<span class="token punctuation">)</span>
+  <span class="token punctuation">}</span>
+  <span class="token comment">//set值时要确保computed相关ReactiveEffect要先执行,否则就会使依赖这些computed的effects失效</span>
+  computedRunners<span class="token punctuation">.</span><span class="token function">forEach</span><span class="token punctuation">(</span>run<span class="token punctuation">)</span>
+  effects<span class="token punctuation">.</span><span class="token function">forEach</span><span class="token punctuation">(</span>run<span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+<span class="token comment">// computed ReactiveEffect执行时机</span>
+<span class="token comment">// let a = reactive({ b: 2 })</span>
+<span class="token comment">// let b = computed(() =&gt; {</span>
+<span class="token comment">//   return a.b</span>
+<span class="token comment">// })</span>
+<span class="token comment">// let dummy;</span>
+<span class="token comment">// const c = effect(() =&gt; {</span>
+<span class="token comment">//   dummy = b.value</span>
+<span class="token comment">// })</span>
+<span class="token comment">// console.log(dummy) // 2</span>
+<span class="token comment">// a.b = 0</span>
+<span class="token comment">// console.log(dummy) // 0</span>
+<span class="token comment">// console.log(b.value) // 0</span>
+<span class="token comment">// 而当我们将Vue3的代码改为调换下顺序:</span>
+<span class="token comment">//   effects.forEach(run)</span>
+<span class="token comment">//   computedRunners.forEach(run)</span>
+<span class="token comment">// 上段代码的执行结果就会变为 2 2 0</span>
+
+<span class="token comment">// 添加执行任务</span>
+<span class="token keyword">function</span> <span class="token function">addRunners</span><span class="token punctuation">(</span>
+  <span class="token parameter">effects<span class="token operator">:</span> Set<span class="token operator">&lt;</span>ReactiveEffect<span class="token operator">&gt;</span><span class="token punctuation">,</span>
+  computedRunners<span class="token operator">:</span> Set<span class="token operator">&lt;</span>ReactiveEffect<span class="token operator">&gt;</span><span class="token punctuation">,</span>
+  effectsToAdd<span class="token operator">:</span> Set<span class="token operator">&lt;</span>ReactiveEffect<span class="token operator">&gt;</span> <span class="token operator">|</span> <span class="token keyword">undefined</span></span>
+<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>effectsToAdd <span class="token operator">!==</span> <span class="token keyword">void</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    effectsToAdd<span class="token punctuation">.</span><span class="token function">forEach</span><span class="token punctuation">(</span><span class="token parameter">effect</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+      <span class="token keyword">if</span> <span class="token punctuation">(</span>effect<span class="token punctuation">.</span>computed<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        computedRunners<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>effect<span class="token punctuation">)</span>
+      <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+        effects<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>effect<span class="token punctuation">)</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">function</span> <span class="token function">scheduleRun</span><span class="token punctuation">(</span>
+  <span class="token parameter">effect<span class="token operator">:</span> ReactiveEffect<span class="token punctuation">,</span>
+  target<span class="token operator">:</span> any<span class="token punctuation">,</span>
+  type<span class="token operator">:</span> OperationTypes<span class="token punctuation">,</span>
+  key<span class="token operator">:</span> string <span class="token operator">|</span> symbol <span class="token operator">|</span> <span class="token keyword">undefined</span><span class="token punctuation">,</span>
+  extraInfo<span class="token operator">:</span> any</span>
+<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>__DEV__ <span class="token operator">&amp;&amp;</span> effect<span class="token punctuation">.</span>onTrigger<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    effect<span class="token punctuation">.</span><span class="token function">onTrigger</span><span class="token punctuation">(</span>
+      <span class="token function">extend</span><span class="token punctuation">(</span>
+        <span class="token punctuation">{</span>
+          effect<span class="token punctuation">,</span>
+          target<span class="token punctuation">,</span>
+          key<span class="token punctuation">,</span>
+          type
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        extraInfo
+      <span class="token punctuation">)</span>
+    <span class="token punctuation">)</span>
+  <span class="token punctuation">}</span>
+  <span class="token comment">//这里的scheduler就是Vue的性能优化点，放入队里里, 等到miscroTask里进行调用</span>
+  <span class="token comment">//这个scheduler可以看做就是调用了nextTick函数</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>effect<span class="token punctuation">.</span>scheduler <span class="token operator">!==</span> <span class="token keyword">void</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    effect<span class="token punctuation">.</span><span class="token function">scheduler</span><span class="token punctuation">(</span>effect<span class="token punctuation">)</span>
+  <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+    <span class="token function">effect</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre></div><h2 id="computed方法"><a href="#computed方法" class="header-anchor">#</a> computed方法</h2> <div class="language-js extra-class"><pre class="language-js"><code><span class="token comment">// 总体来说computed用法大致如下：</span>
+<span class="token keyword">const</span> value <span class="token operator">=</span> <span class="token function">reactive</span><span class="token punctuation">(</span><span class="token punctuation">{</span> foo<span class="token operator">:</span> <span class="token number">0</span> <span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token keyword">const</span> c1 <span class="token operator">=</span> <span class="token function">computed</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> value<span class="token punctuation">.</span>foo<span class="token punctuation">)</span>
+<span class="token keyword">const</span> c2 <span class="token operator">=</span> <span class="token function">computed</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> c1<span class="token punctuation">.</span>value <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span>
+c2<span class="token punctuation">.</span>value  <span class="token comment">// 1</span>
+c1<span class="token punctuation">.</span>value  <span class="token comment">// 0</span>
+value<span class="token punctuation">.</span>foo<span class="token operator">++</span>
+c2<span class="token punctuation">.</span>value  <span class="token comment">// 2</span>
+c1<span class="token punctuation">.</span>value  <span class="token comment">// 1</span>
+<span class="token comment">// -------------</span>
+<span class="token keyword">const</span> n <span class="token operator">=</span> <span class="token function">ref</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span>
+<span class="token keyword">const</span> plusOne <span class="token operator">=</span> <span class="token function">computed</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  <span class="token function-variable function">get</span><span class="token operator">:</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> n<span class="token punctuation">.</span>value <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">,</span>
+  <span class="token function-variable function">set</span><span class="token operator">:</span> <span class="token parameter">val</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+    n<span class="token punctuation">.</span>value <span class="token operator">=</span> val <span class="token operator">-</span> <span class="token number">1</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+plusOne<span class="token punctuation">.</span>value <span class="token comment">// 2</span>
+plusOne<span class="token punctuation">.</span>value <span class="token operator">=</span> <span class="token number">1</span>  <span class="token comment">// n.value : 0</span>
+</code></pre></div><div class="language-js extra-class"><pre class="language-js"><code><span class="token keyword">export</span> <span class="token keyword">function</span> computed<span class="token operator">&lt;</span><span class="token constant">T</span><span class="token operator">&gt;</span><span class="token punctuation">(</span>
+  getterOrOptions<span class="token operator">:</span> <span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token constant">T</span><span class="token punctuation">)</span> <span class="token operator">|</span> WritableComputedOptions<span class="token operator">&lt;</span><span class="token constant">T</span><span class="token operator">&gt;</span>
+<span class="token punctuation">)</span><span class="token operator">:</span> any <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> isReadonly <span class="token operator">=</span> <span class="token function">isFunction</span><span class="token punctuation">(</span>getterOrOptions<span class="token punctuation">)</span>
+  <span class="token keyword">const</span> getter <span class="token operator">=</span> isReadonly
+    <span class="token operator">?</span> <span class="token punctuation">(</span>getterOrOptions <span class="token keyword">as</span> <span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token constant">T</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+    <span class="token operator">:</span> <span class="token punctuation">(</span>getterOrOptions <span class="token keyword">as</span> WritableComputedOptions<span class="token operator">&lt;</span><span class="token constant">T</span><span class="token operator">&gt;</span><span class="token punctuation">)</span><span class="token punctuation">.</span>get
+  <span class="token keyword">const</span> setter <span class="token operator">=</span> isReadonly
+    <span class="token operator">?</span> __DEV__
+      <span class="token operator">?</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+          console<span class="token punctuation">.</span><span class="token function">warn</span><span class="token punctuation">(</span><span class="token string">'Write operation failed: computed value is readonly'</span><span class="token punctuation">)</span>
+        <span class="token punctuation">}</span>
+      <span class="token operator">:</span> <span class="token constant">NOOP</span>
+    <span class="token operator">:</span> <span class="token punctuation">(</span>getterOrOptions <span class="token keyword">as</span> WritableComputedOptions<span class="token operator">&lt;</span><span class="token constant">T</span><span class="token operator">&gt;</span><span class="token punctuation">)</span><span class="token punctuation">.</span>set
+
+  <span class="token keyword">let</span> dirty <span class="token operator">=</span> <span class="token boolean">true</span>
+  <span class="token keyword">let</span> value<span class="token operator">:</span> <span class="token constant">T</span>
+
+  <span class="token keyword">const</span> runner <span class="token operator">=</span> <span class="token function">effect</span><span class="token punctuation">(</span>getter<span class="token punctuation">,</span> <span class="token punctuation">{</span>
+    lazy<span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
+    <span class="token comment">// 凡事在此用这个属性标记为计算属性的在trigger触发更新时候都会优先执行</span>
+    computed<span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
+    <span class="token function-variable function">scheduler</span><span class="token operator">:</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+      dirty <span class="token operator">=</span> <span class="token boolean">true</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span><span class="token punctuation">)</span>
+  <span class="token keyword">return</span> <span class="token punctuation">{</span>
+    <span class="token punctuation">[</span>refSymbol<span class="token punctuation">]</span><span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
+    <span class="token comment">// 暴露effect便于停止响应计算,看测试用例就明白了</span>
+    <span class="token comment">// it('should no longer update when stopped', () =&gt; {</span>
+    <span class="token comment">//   const value = reactive&lt;{ foo?: number }&gt;({})</span>
+    <span class="token comment">//   const cValue = computed(() =&gt; value.foo)</span>
+    <span class="token comment">//   let dummy</span>
+    <span class="token comment">//   effect(() =&gt; {</span>
+    <span class="token comment">//     dummy = cValue.value</span>
+    <span class="token comment">//   })</span>
+    <span class="token comment">//   expect(dummy).toBe(undefined)</span>
+    <span class="token comment">//   value.foo = 1</span>
+    <span class="token comment">//   expect(dummy).toBe(1)</span>
+    <span class="token comment">//   stop(cValue.effect)</span>
+    <span class="token comment">//   value.foo = 2</span>
+    <span class="token comment">//   expect(dummy).toBe(1)</span>
+    <span class="token comment">// })</span>
+    effect<span class="token operator">:</span> runner<span class="token punctuation">,</span>
+    <span class="token keyword">get</span> <span class="token function">value</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token keyword">if</span> <span class="token punctuation">(</span>dirty<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        value <span class="token operator">=</span> <span class="token function">runner</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+        dirty <span class="token operator">=</span> <span class="token boolean">false</span>
+      <span class="token punctuation">}</span>
+      <span class="token comment">// 当需要被计算的effects能在父级effect访问的时候需要收集计算属性所有依赖</span>
+      <span class="token comment">// This should also apply for chained computed properties.</span>
+      <span class="token function">trackChildRun</span><span class="token punctuation">(</span>runner<span class="token punctuation">)</span>
+      <span class="token keyword">return</span> value
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token keyword">set</span> <span class="token function">value</span><span class="token punctuation">(</span><span class="token parameter">newValue<span class="token operator">:</span> <span class="token constant">T</span></span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token function">setter</span><span class="token punctuation">(</span>newValue<span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+<span class="token comment">// let a = reactive({ b: 2, c: 3 })</span>
+<span class="token comment">// let b = computed(() =&gt; {</span>
+<span class="token comment">//   return a.b</span>
+<span class="token comment">// })</span>
+<span class="token comment">// let c = computed(() =&gt; {</span>
+<span class="token comment">//   return a.c</span>
+<span class="token comment">// })</span>
+<span class="token comment">// let dummy</span>
+<span class="token comment">// debugger</span>
+<span class="token comment">// const cc = effect(() =&gt; {</span>
+<span class="token comment">//   dummy = b.value + c.value</span>
+<span class="token comment">// })</span>
+<span class="token comment">// debugger</span>
+<span class="token comment">//可以debug看一下上面的代码, 就会发现cc.deps就是一个由b.deps和c.deps组成的数组。 其实看</span>
+<span class="token comment">//源码会发现computed就是一个特殊的ReactiveEffect</span>
+<span class="token keyword">function</span> <span class="token function">trackChildRun</span><span class="token punctuation">(</span><span class="token parameter">childRunner<span class="token operator">:</span> ReactiveEffect</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> parentRunner <span class="token operator">=</span>
+    activeReactiveEffectStack<span class="token punctuation">[</span>activeReactiveEffectStack<span class="token punctuation">.</span>length <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">]</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>parentRunner<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">let</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> childRunner<span class="token punctuation">.</span>deps<span class="token punctuation">.</span>length<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token keyword">const</span> dep <span class="token operator">=</span> childRunner<span class="token punctuation">.</span>deps<span class="token punctuation">[</span>i<span class="token punctuation">]</span>
+      <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>dep<span class="token punctuation">.</span><span class="token function">has</span><span class="token punctuation">(</span>parentRunner<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        dep<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>parentRunner<span class="token punctuation">)</span>
+        parentRunner<span class="token punctuation">.</span>deps<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span>dep<span class="token punctuation">)</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre></div></div> <footer class="page-edit"><!----> <!----></footer> <div class="page-nav"><p class="inner"><span class="prev">
+      ←
+      <a href="/vue-source-code-analysize/techAccumulate/vue-rfc.html" class="prev">vue3和2响应式对比</a></span> <span class="next"><a href="/vue-source-code-analysize/easyInit/init.html">核心渲染函数介绍</a>
+      →
+    </span></p></div> </main></div><div class="global-ui"></div></div>
+    <script src="/vue-source-code-analysize/assets/js/app.b763ca3b.js" defer></script><script src="/vue-source-code-analysize/assets/js/2.d9983486.js" defer></script><script src="/vue-source-code-analysize/assets/js/18.52b45891.js" defer></script>
+  </body>
+</html>

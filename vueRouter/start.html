@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>vue-router源码解析 | 前端学习</title>
+    <meta name="description" content="前端技术底层实现">
+    
+    
+    <link rel="preload" href="/vue-source-code-analysize/assets/css/0.styles.6bdd7a3f.css" as="style"><link rel="preload" href="/vue-source-code-analysize/assets/js/app.b763ca3b.js" as="script"><link rel="preload" href="/vue-source-code-analysize/assets/js/2.d9983486.js" as="script"><link rel="preload" href="/vue-source-code-analysize/assets/js/5.6a87b23f.js" as="script"><link rel="prefetch" href="/vue-source-code-analysize/assets/js/10.647aa5c0.js"><link rel="prefetch" href="/vue-source-code-analysize/assets/js/11.c33a6322.js"><link rel="prefetch" href="/vue-source-code-analysize/assets/js/12.fb125ffe.js"><link rel="prefetch" href="/vue-source-code-analysize/assets/js/13.c788a33f.js"><link rel="prefetch" href="/vue-source-code-analysize/assets/js/14.da7cfa92.js"><link rel="prefetch" href="/vue-source-code-analysize/assets/js/15.9e7ba6b6.js"><link rel="prefetch" href="/vue-source-code-analysize/assets/js/16.a6c3c4a5.js"><link rel="prefetch" href="/vue-source-code-analysize/assets/js/17.6199def5.js"><link rel="prefetch" href="/vue-source-code-analysize/assets/js/18.52b45891.js"><link rel="prefetch" href="/vue-source-code-analysize/assets/js/19.4e9eea1b.js"><link rel="prefetch" href="/vue-source-code-analysize/assets/js/20.daa69c1d.js"><link rel="prefetch" href="/vue-source-code-analysize/assets/js/21.5bc4eca1.js"><link rel="prefetch" href="/vue-source-code-analysize/assets/js/22.2c21b5ba.js"><link rel="prefetch" href="/vue-source-code-analysize/assets/js/23.81195dcf.js"><link rel="prefetch" href="/vue-source-code-analysize/assets/js/24.cb0b0283.js"><link rel="prefetch" href="/vue-source-code-analysize/assets/js/25.aaeb364b.js"><link rel="prefetch" href="/vue-source-code-analysize/assets/js/3.f763d6bc.js"><link rel="prefetch" href="/vue-source-code-analysize/assets/js/4.859fd439.js"><link rel="prefetch" href="/vue-source-code-analysize/assets/js/6.4b3a66c2.js"><link rel="prefetch" href="/vue-source-code-analysize/assets/js/7.c0610b4a.js"><link rel="prefetch" href="/vue-source-code-analysize/assets/js/8.e2299770.js"><link rel="prefetch" href="/vue-source-code-analysize/assets/js/9.da2cd365.js">
+    <link rel="stylesheet" href="/vue-source-code-analysize/assets/css/0.styles.6bdd7a3f.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container"><header class="navbar"><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/vue-source-code-analysize/" class="home-link router-link-active"><!----> <span class="site-name">前端学习</span></a> <div class="links"><div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><a href="https://github.com/limingkang" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  gitHub
+  <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></div> <!----></nav></div></header> <div class="sidebar-mask"></div> <aside class="sidebar"><nav class="nav-links"><div class="nav-item"><a href="https://github.com/limingkang" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  gitHub
+  <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></div> <!----></nav>  <ul class="sidebar-links"><li><section class="sidebar-group depth-0"><a href="/vue-source-code-analysize/" class="sidebar-heading clickable router-link-active"><span>vue3源码</span> <!----></a> <ul class="sidebar-links sidebar-group-items"><li><a href="/vue-source-code-analysize/techAccumulate/vue-rfc.html" class="sidebar-link">vue3和2响应式对比</a></li><li><a href="/vue-source-code-analysize/vueReactive/code-analsize.html" class="sidebar-link">vue3响应式源码讲解</a></li><li><a href="/vue-source-code-analysize/easyInit/init.html" class="sidebar-link">核心渲染函数介绍</a></li><li><a href="/vue-source-code-analysize/render/render.html" class="sidebar-link">渲染流程介绍</a></li><li><a href="/vue-source-code-analysize/domDiff/dom-diff.html" class="sidebar-link">dom diff</a></li><li><a href="/vue-source-code-analysize/compiler/compiler.html" class="sidebar-link">编译函数介绍</a></li></ul></section></li><li><section class="sidebar-group depth-0"><p class="sidebar-heading"><span>vuex源码</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/vue-source-code-analysize/vuex/vuex-start.html" class="sidebar-link">vuex初识</a></li><li><a href="/vue-source-code-analysize/vuex/vuex-module.html" class="sidebar-link">vuex模块部分</a></li><li><a href="/vue-source-code-analysize/vuex/vuex-analyzed.html" class="sidebar-link">初始化挂载vue</a></li><li><a href="/vue-source-code-analysize/vuex/vuex-api.html" class="sidebar-link">实例的api</a></li><li><a href="/vue-source-code-analysize/vuex/vuex-help.html" class="sidebar-link">辅助函数介绍</a></li></ul></section></li><li><section class="sidebar-group depth-0"><p class="sidebar-heading open"><span>vue-router源码</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/vue-source-code-analysize/vueRouter/start.html" class="active sidebar-link">整体介绍</a><ul class="sidebar-sub-headers"><li class="sidebar-sub-header"><a href="/vue-source-code-analysize/vueRouter/start.html#使用方法和注册vue-router插件" class="sidebar-link">使用方法和注册vue-router插件</a></li><li class="sidebar-sub-header"><a href="/vue-source-code-analysize/vueRouter/start.html#实例化vue-router创建路由映射表" class="sidebar-link">实例化vue-router创建路由映射表</a></li><li class="sidebar-sub-header"><a href="/vue-source-code-analysize/vueRouter/start.html#creatematcher中match函数" class="sidebar-link">createMatcher中match函数</a></li><li class="sidebar-sub-header"><a href="/vue-source-code-analysize/vueRouter/start.html#生成-history-路由实例" class="sidebar-link">生成 history 路由实例</a></li></ul></li><li><a href="/vue-source-code-analysize/vueRouter/two.html" class="sidebar-link">路由原理</a></li><li><a href="/vue-source-code-analysize/vueRouter/three.html" class="sidebar-link">路由守卫的生成</a></li></ul></section></li><li><section class="sidebar-group depth-0"><p class="sidebar-heading"><span>源码实现</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/vue-source-code-analysize/webpack/webpack.html" class="sidebar-link">webpack打包原理</a></li><li><a href="/vue-source-code-analysize/promise/promise.html" class="sidebar-link">promise</a></li><li><a href="/vue-source-code-analysize/promise/await.html" class="sidebar-link">async、await原理</a></li><li><a href="/vue-source-code-analysize/promise/class.html" class="sidebar-link">class原理</a></li></ul></section></li></ul> </aside> <main class="page"> <div class="theme-default-content content__default"><h1 id="vue-router源码解析"><a href="#vue-router源码解析" class="header-anchor">#</a> vue-router源码解析</h1> <h2 id="使用方法和注册vue-router插件"><a href="#使用方法和注册vue-router插件" class="header-anchor">#</a> 使用方法和注册vue-router插件</h2> <p>我们从 vue-router(3.0.2)的使用方法说起，当使用 vue-router 时，一般会分为3步</p> <ul><li>引入 vue-router，调用 Vue.use（Router）</li> <li>实例化 router 对象，传入一个路由层级表 routes</li> <li>在 main.js 中给根实例传入 router 对象</li></ul> <p>当我们调用 Vue.use（Router）时会执行插件的注册流程，可以看下对应的install方法</p> <div class="language-js extra-class"><pre class="language-js"><code>Vue<span class="token punctuation">.</span><span class="token function">mixin</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  <span class="token comment">// 全局混入，在beforeCreate中会初始化当前路由的信息</span>
+  <span class="token comment">/** vue-router流程
+   * 触发路由跳转 =&gt; init =&gt; transitionTo =&gt; 执行准备离开相关的路由钩子 =&gt; 接受到异步组
+   * 件并解析 =&gt; 执行准备进入的路由的钩子
+   * 确认导航成功  =&gt; 更新视图（触发完组件的所有声明周期） =&gt; 触发beforeRouterEnter的回调 **/</span>
+  <span class="token function">beforeCreate</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token comment">//当是根实例时会进行路由初始化操作</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">isDef</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>$options<span class="token punctuation">.</span>router<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token keyword">this</span><span class="token punctuation">.</span>_routerRoot <span class="token operator">=</span> <span class="token keyword">this</span> <span class="token comment">// 将routerRoot等于根实例</span>
+      <span class="token keyword">this</span><span class="token punctuation">.</span>_router <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>$options<span class="token punctuation">.</span>router <span class="token comment">// 给根实例添加_router属性等于router对象</span>
+      <span class="token comment">/**执行init方法初始化路由传入根实例**/</span>
+      <span class="token keyword">this</span><span class="token punctuation">.</span>_router<span class="token punctuation">.</span><span class="token function">init</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span>
+        <span class="token comment">/**将根实例的_router属性，即组件实例的$route属性定义为响应式，每次路由确认导航时
+         * 会触发setter，将根实例重新渲染**/</span>
+        <span class="token comment">//每次路由切换都会执行回调修改_router(src/index.js:124)</span>
+      Vue<span class="token punctuation">.</span>util<span class="token punctuation">.</span><span class="token function">defineReactive</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">,</span> <span class="token string">'_route'</span><span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token punctuation">.</span>_router<span class="token punctuation">.</span>history<span class="token punctuation">.</span>current<span class="token punctuation">)</span>
+    <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+      <span class="token comment">// 非根实例则等于它父组件的_routerRoot(因为是树形结构所以所有的组件的_routerRoot都等于根实例)</span>
+      <span class="token keyword">this</span><span class="token punctuation">.</span>_routerRoot <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>$parent <span class="token operator">&amp;&amp;</span> <span class="token keyword">this</span><span class="token punctuation">.</span>$parent<span class="token punctuation">.</span>_routerRoot<span class="token punctuation">)</span> <span class="token operator">||</span> <span class="token keyword">this</span>
+    <span class="token punctuation">}</span>
+    <span class="token function">registerInstance</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token punctuation">)</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token function">destroyed</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token function">registerInstance</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+ <span class="token comment">// 定义$router指向根实例的router对象</span>
+Object<span class="token punctuation">.</span><span class="token function">defineProperty</span><span class="token punctuation">(</span><span class="token class-name">Vue</span><span class="token punctuation">.</span>prototype<span class="token punctuation">,</span> <span class="token string">'$router'</span><span class="token punctuation">,</span> <span class="token punctuation">{</span>
+  <span class="token keyword">get</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span> <span class="token keyword">return</span> <span class="token keyword">this</span><span class="token punctuation">.</span>_routerRoot<span class="token punctuation">.</span>_router <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+
+  <span class="token comment">// 定义$router指向当前的路由</span>
+  <span class="token comment">// 指向根实例的 _route 属性，当 router-view 被生成时，会触发 $route 的 getter 函数</span>
+  <span class="token comment">// 同时会给 _route 收集到当前的渲染 watcher</span>
+Object<span class="token punctuation">.</span><span class="token function">defineProperty</span><span class="token punctuation">(</span><span class="token class-name">Vue</span><span class="token punctuation">.</span>prototype<span class="token punctuation">,</span> <span class="token string">'$route'</span><span class="token punctuation">,</span> <span class="token punctuation">{</span>
+  <span class="token keyword">get</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span> <span class="token keyword">return</span> <span class="token keyword">this</span><span class="token punctuation">.</span>_routerRoot<span class="token punctuation">.</span>_route <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+
+  <span class="token comment">// 全局注册RouterView,RouterLink</span>
+Vue<span class="token punctuation">.</span><span class="token function">component</span><span class="token punctuation">(</span><span class="token string">'RouterView'</span><span class="token punctuation">,</span> View<span class="token punctuation">)</span>
+Vue<span class="token punctuation">.</span><span class="token function">component</span><span class="token punctuation">(</span><span class="token string">'RouterLink'</span><span class="token punctuation">,</span> Link<span class="token punctuation">)</span>
+</code></pre></div><h2 id="实例化vue-router创建路由映射表"><a href="#实例化vue-router创建路由映射表" class="header-anchor">#</a> 实例化vue-router创建路由映射表</h2> <p>通常使用 vue-router 时，会在 router.js 中通过 new Router 的形式生成一个 router 的实例，并传入一个
+路由的层级表 routes 数组<code>new Router({routes:[]})</code>我们称这个数组的每个元素叫做一个路由配置项对象（源
+码中的类型名叫 RouteConfig)，仔细观察可以发现它是一个树形的数据结构，即含有一个 children 数组，数组的
+元素也是一个路由配置项对象</p> <div class="language-js extra-class"><pre class="language-js"><code><span class="token comment">// 了解路由配置项对象后，我们找到源码中对应的 VueRouter 类</span>
+<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token keyword">class</span> <span class="token class-name">VueRouter</span> <span class="token punctuation">{</span>
+  <span class="token function">constructor</span> <span class="token punctuation">(</span><span class="token parameter">options<span class="token operator">:</span> RouterOptions <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token punctuation">}</span></span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span>options <span class="token operator">=</span> options
+      <span class="token comment">/**创建核心的matcher对象*/</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span>matcher <span class="token operator">=</span> <span class="token function">createMatcher</span><span class="token punctuation">(</span>options<span class="token punctuation">.</span>routes <span class="token operator">||</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token punctuation">)</span>
+    <span class="token keyword">let</span> mode <span class="token operator">=</span> options<span class="token punctuation">.</span>mode <span class="token operator">||</span> <span class="token string">'hash'</span>
+    <span class="token comment">// 选择了history模式但是不支持会回退到hash路由</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span>fallback <span class="token operator">=</span> mode <span class="token operator">===</span> <span class="token string">'history'</span> <span class="token operator">&amp;&amp;</span> <span class="token operator">!</span>supportsPushState <span class="token operator">&amp;&amp;</span> options<span class="token punctuation">.</span>fallback <span class="token operator">!==</span> <span class="token boolean">false</span>
+    <span class="token comment">// 降级为hash模式（显示声明为hash模式 | 不支持history模式 | 要求降级fallback:true）</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>fallback<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      mode <span class="token operator">=</span> <span class="token string">'hash'</span>
+    <span class="token punctuation">}</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>inBrowser<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      mode <span class="token operator">=</span> <span class="token string">'abstract'</span>
+    <span class="token punctuation">}</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span>mode <span class="token operator">=</span> mode
+
+    <span class="token comment">// 根据mode来新建不同的实例（HTML5History | HashHistory | AbstractHistory）给history属性</span>
+    <span class="token comment">// 根据 history 的类型，采取不同的方式切换路由（108）</span>
+    <span class="token keyword">switch</span> <span class="token punctuation">(</span>mode<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token keyword">case</span> <span class="token string">'history'</span><span class="token operator">:</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>history <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">HTML5History</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">,</span> options<span class="token punctuation">.</span>base<span class="token punctuation">)</span>
+        <span class="token keyword">break</span>
+      <span class="token keyword">case</span> <span class="token string">'hash'</span><span class="token operator">:</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>history <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">HashHistory</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">,</span> options<span class="token punctuation">.</span>base<span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token punctuation">.</span>fallback<span class="token punctuation">)</span>
+        <span class="token keyword">break</span>
+      <span class="token keyword">case</span> <span class="token string">'abstract'</span><span class="token operator">:</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>history <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">AbstractHistory</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">,</span> options<span class="token punctuation">.</span>base<span class="token punctuation">)</span>
+        <span class="token keyword">break</span>
+      <span class="token keyword">default</span><span class="token operator">:</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>process<span class="token punctuation">.</span>env<span class="token punctuation">.</span><span class="token constant">NODE_ENV</span> <span class="token operator">!==</span> <span class="token string">'production'</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+          <span class="token function">assert</span><span class="token punctuation">(</span><span class="token boolean">false</span><span class="token punctuation">,</span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">invalid mode: </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>mode<span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+</code></pre></div><p>先来看 matcher 属性，图中第四行会执行到 createMatcher 方法，返回一个 matcher 对象，包含 match 和 addRoutes
+这2 个方法，这 2 个方法是 vue-router 中比较重要的方法，之后我们会分析它们的作用在这之前先看一下 createMatcher函
+数执行时触发的 createRouteMap 函数</p> <div class="language-js extra-class"><pre class="language-js"><code><span class="token keyword">export</span> <span class="token keyword">function</span> <span class="token function">createMatcher</span> <span class="token punctuation">(</span>
+  routes<span class="token operator">:</span> Array<span class="token operator">&lt;</span>RouteConfig<span class="token operator">&gt;</span><span class="token punctuation">,</span> <span class="token comment">//routes为实例化vueRouter的路由列表</span>
+  router<span class="token operator">:</span> VueRouter
+<span class="token punctuation">)</span><span class="token operator">:</span> Matcher <span class="token punctuation">{</span>
+  <span class="token comment">// 而 createRouteMap 这个函数就是用来创建路由的映射表的，它是一个记录所有信息（路由记录）的对象，将参数</span>
+  <span class="token comment">// routes 数组（即上面提到的路由配置项数组）进行一系列处理，生成 pathList，pathMap，nameMap 3张路由映射表</span>
+  <span class="token keyword">const</span> <span class="token punctuation">{</span> pathList<span class="token punctuation">,</span> pathMap<span class="token punctuation">,</span> nameMap <span class="token punctuation">}</span> <span class="token operator">=</span> <span class="token function">createRouteMap</span><span class="token punctuation">(</span>routes<span class="token punctuation">)</span>
+  <span class="token comment">// 这个 api 日常开发也遇到过，用于动态注册路由，它的原理其实很简单，就是接受一个 routes 数组，再次调用</span>
+  <span class="token comment">// createRouteMap 将数组每个元素转换成路由记录 (RouteRecord) ，然后合并到之前生成的路由映射表中</span>
+  <span class="token keyword">function</span> <span class="token function">addRoutes</span> <span class="token punctuation">(</span><span class="token parameter">routes</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token function">createRouteMap</span><span class="token punctuation">(</span>routes<span class="token punctuation">,</span> pathList<span class="token punctuation">,</span> pathMap<span class="token punctuation">,</span> nameMap<span class="token punctuation">)</span>
+  <span class="token punctuation">}</span>
+  <span class="token comment">// 调用router.match/router.matcher.match实质上是调用这个方法</span>
+  <span class="token comment">/**通过当前的路径结合之前生成的所有路由的record记录生成一个route对象并返回（createRoute方法）**/</span>
+  <span class="token keyword">function</span> <span class="token function">match</span> <span class="token punctuation">(</span>
+    raw<span class="token operator">:</span> RawLocation<span class="token punctuation">,</span> <span class="token comment">//值为location.pathname（第一次跳转）或者 location 对象</span>
+    currentRoute<span class="token operator">?</span><span class="token operator">:</span> Route<span class="token punctuation">,</span>
+    redirectedFrom<span class="token operator">?</span><span class="token operator">:</span> Location
+  <span class="token punctuation">)</span><span class="token operator">:</span> Route <span class="token punctuation">{</span>
+    <span class="token comment">// logic</span>
+  <span class="token punctuation">}</span>
+
+  <span class="token keyword">return</span> <span class="token punctuation">{</span>
+    match<span class="token punctuation">,</span>
+    addRoutes
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+<span class="token comment">// 用来创建路由的映射表的，它是一个记录所有信息（路由记录）的对象，将参数 routes 数组（即上面提到的</span>
+<span class="token comment">// 路由配置项数组）进行一系列处理，生成 pathList，pathMap，nameMap 3张路由映射表</span>
+<span class="token keyword">export</span> <span class="token keyword">function</span> <span class="token function">createRouteMap</span> <span class="token punctuation">(</span>
+  <span class="token parameter">routes<span class="token operator">:</span> Array<span class="token operator">&lt;</span>RouteConfig<span class="token operator">&gt;</span><span class="token punctuation">,</span>
+  oldPathList<span class="token operator">?</span><span class="token operator">:</span> Array<span class="token operator">&lt;</span>string<span class="token operator">&gt;</span><span class="token punctuation">,</span>
+  oldPathMap<span class="token operator">?</span><span class="token operator">:</span> Dictionary<span class="token operator">&lt;</span>RouteRecord<span class="token operator">&gt;</span><span class="token punctuation">,</span>
+  oldNameMap<span class="token operator">?</span><span class="token operator">:</span> Dictionary<span class="token operator">&lt;</span>RouteRecord<span class="token operator">&gt;</span></span>
+<span class="token punctuation">)</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+  <span class="token comment">// 返回3个对象pathList,pathMap,nameMap</span>
+  pathList<span class="token operator">:</span> Array<span class="token operator">&lt;</span>string<span class="token operator">&gt;</span><span class="token punctuation">;</span>
+  pathMap<span class="token operator">:</span> Dictionary<span class="token operator">&lt;</span>RouteRecord<span class="token operator">&gt;</span><span class="token punctuation">;</span>
+  nameMap<span class="token operator">:</span> Dictionary<span class="token operator">&lt;</span>RouteRecord<span class="token operator">&gt;</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span> <span class="token punctuation">{</span>
+  <span class="token comment">// 设置默认值</span>
+  <span class="token comment">// 当已经完整执行过createRouteMap，使用addRoutes动态添加路由时，pathMap，nameMap会有值，否则为空</span>
+  <span class="token comment">// the path list is used to control path matching priority</span>
+  <span class="token keyword">const</span> pathList<span class="token operator">:</span> Array<span class="token operator">&lt;</span>string<span class="token operator">&gt;</span> <span class="token operator">=</span> oldPathList <span class="token operator">||</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+  <span class="token comment">// $flow-disable-line</span>
+  <span class="token keyword">const</span> pathMap<span class="token operator">:</span> Dictionary<span class="token operator">&lt;</span>RouteRecord<span class="token operator">&gt;</span> <span class="token operator">=</span> oldPathMap <span class="token operator">||</span> Object<span class="token punctuation">.</span><span class="token function">create</span><span class="token punctuation">(</span><span class="token keyword">null</span><span class="token punctuation">)</span>
+  <span class="token comment">// $flow-disable-line</span>
+  <span class="token keyword">const</span> nameMap<span class="token operator">:</span> Dictionary<span class="token operator">&lt;</span>RouteRecord<span class="token operator">&gt;</span> <span class="token operator">=</span> oldNameMap <span class="token operator">||</span> Object<span class="token punctuation">.</span><span class="token function">create</span><span class="token punctuation">(</span><span class="token keyword">null</span><span class="token punctuation">)</span>
+
+  routes<span class="token punctuation">.</span><span class="token function">forEach</span><span class="token punctuation">(</span><span class="token parameter">route</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+    <span class="token comment">// 遍历每项路由数组，执行addRouteRecord函数，将上面3个参数和当前的遍历项作为参数传入</span>
+    <span class="token comment">// 根据配置项routes生成3个路由信息(pathList, pathMap, nameMap)</span>
+    <span class="token function">addRouteRecord</span><span class="token punctuation">(</span>pathList<span class="token punctuation">,</span> pathMap<span class="token punctuation">,</span> nameMap<span class="token punctuation">,</span> route<span class="token punctuation">)</span>
+  <span class="token punctuation">}</span><span class="token punctuation">)</span>
+  <span class="token keyword">return</span> <span class="token punctuation">{</span>
+    pathList<span class="token punctuation">,</span>
+    pathMap<span class="token punctuation">,</span>
+    nameMap
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre></div><p>接下来我们重点分析下addRouteRecord方法，值得注意的是里面用到了路径解析的正则的插件，可以参考
+<a href="https://github.com/pillarjs/path-to-regexp" target="_blank" rel="noopener noreferrer">path-to-regexp<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></p> <div class="language-js extra-class"><pre class="language-js"><code><span class="token comment">// const regexp = pathToRegexp(&quot;/:foo/:bar&quot;);</span>
+<span class="token comment">// keys = [{ name: 'foo', prefix: '/', ... }, { name: 'bar', prefix: '/', ... }]</span>
+<span class="token comment">// regexp.exec(&quot;/test/route&quot;);</span>
+<span class="token comment">//=&gt; [ '/test/route', 'test', 'route', index: 0, input: '/test/route', groups: undefined ]</span>
+<span class="token keyword">function</span> <span class="token function">compileRouteRegex</span> <span class="token punctuation">(</span><span class="token parameter">path<span class="token operator">:</span> string<span class="token punctuation">,</span> pathToRegexpOptions<span class="token operator">:</span> PathToRegexpOptions</span><span class="token punctuation">)</span><span class="token operator">:</span> RouteRegExp <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> regex <span class="token operator">=</span> <span class="token function">Regexp</span><span class="token punctuation">(</span>path<span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span> pathToRegexpOptions<span class="token punctuation">)</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>process<span class="token punctuation">.</span>env<span class="token punctuation">.</span><span class="token constant">NODE_ENV</span> <span class="token operator">!==</span> <span class="token string">'production'</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">const</span> keys<span class="token operator">:</span> any <span class="token operator">=</span> Object<span class="token punctuation">.</span><span class="token function">create</span><span class="token punctuation">(</span><span class="token keyword">null</span><span class="token punctuation">)</span>
+    regex<span class="token punctuation">.</span>keys<span class="token punctuation">.</span><span class="token function">forEach</span><span class="token punctuation">(</span><span class="token parameter">key</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+      <span class="token function">warn</span><span class="token punctuation">(</span><span class="token operator">!</span>keys<span class="token punctuation">[</span>key<span class="token punctuation">.</span>name<span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">Duplicate param keys in route with path: &quot;</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>path<span class="token interpolation-punctuation punctuation">}</span></span><span class="token string">&quot;</span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span>
+      keys<span class="token punctuation">[</span>key<span class="token punctuation">.</span>name<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token boolean">true</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span>
+  <span class="token punctuation">}</span>
+  <span class="token keyword">return</span> regex
+<span class="token punctuation">}</span>
+<span class="token comment">//addRouteRecord会遍历所有routes逐步给pathMap/nameMap添加路由的信息（record）</span>
+<span class="token keyword">function</span> <span class="token function">addRouteRecord</span> <span class="token punctuation">(</span>
+    <span class="token comment">//第一次调用前3个参数为空对象</span>
+  pathList<span class="token operator">:</span> Array<span class="token operator">&lt;</span>string<span class="token operator">&gt;</span><span class="token punctuation">,</span>
+  pathMap<span class="token operator">:</span> Dictionary<span class="token operator">&lt;</span>RouteRecord<span class="token operator">&gt;</span><span class="token punctuation">,</span>
+  nameMap<span class="token operator">:</span> Dictionary<span class="token operator">&lt;</span>RouteRecord<span class="token operator">&gt;</span><span class="token punctuation">,</span>
+  route<span class="token operator">:</span> RouteConfig<span class="token punctuation">,</span>  <span class="token comment">// 第一次调用时只有route有值，为当前遍历到的route对象</span>
+  parent<span class="token operator">?</span><span class="token operator">:</span> RouteRecord<span class="token punctuation">,</span>
+  matchAs<span class="token operator">?</span><span class="token operator">:</span> string <span class="token comment">//路由别名</span>
+<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token comment">// 获取路由的path属性和name属性</span>
+  <span class="token keyword">const</span> <span class="token punctuation">{</span> path<span class="token punctuation">,</span> name <span class="token punctuation">}</span> <span class="token operator">=</span> route
+  <span class="token keyword">const</span> pathToRegexpOptions<span class="token operator">:</span> PathToRegexpOptions <span class="token operator">=</span> route<span class="token punctuation">.</span>pathToRegexpOptions <span class="token operator">||</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+  <span class="token comment">// 规范化路由（如果当前route有父route，则返回一个父子的完整路径）</span>
+    <span class="token comment">// e.g &quot;/parent/child&quot;</span>
+  <span class="token keyword">const</span> normalizedPath <span class="token operator">=</span> <span class="token function">normalizePath</span><span class="token punctuation">(</span>
+    path<span class="token punctuation">,</span>
+    parent<span class="token punctuation">,</span>
+    pathToRegexpOptions<span class="token punctuation">.</span>strict
+  <span class="token punctuation">)</span>
+    <span class="token comment">// 用的不多</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">typeof</span> route<span class="token punctuation">.</span>caseSensitive <span class="token operator">===</span> <span class="token string">'boolean'</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    pathToRegexpOptions<span class="token punctuation">.</span>sensitive <span class="token operator">=</span> route<span class="token punctuation">.</span>caseSensitive
+  <span class="token punctuation">}</span>
+
+  <span class="token comment">// 定义当前route的路由记录</span>
+  <span class="token keyword">const</span> record<span class="token operator">:</span> RouteRecord <span class="token operator">=</span> <span class="token punctuation">{</span>
+    path<span class="token operator">:</span> normalizedPath<span class="token punctuation">,</span> <span class="token comment">// 规范化后的路由</span>
+    <span class="token comment">// 匹配到当前 route 对象的正则</span>
+    regex<span class="token operator">:</span> <span class="token function">compileRouteRegex</span><span class="token punctuation">(</span>normalizedPath<span class="token punctuation">,</span> pathToRegexpOptions<span class="token punctuation">)</span><span class="token punctuation">,</span>
+    <span class="token comment">//route 对象的组件（因为 vue-router 中有命名视图，所以会默认放在 default 属性下，instances 同理）</span>
+    components<span class="token operator">:</span> route<span class="token punctuation">.</span>components <span class="token operator">||</span> <span class="token punctuation">{</span> <span class="token keyword">default</span><span class="token operator">:</span> route<span class="token punctuation">.</span>component <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token comment">// route 对象对应的 vm 实例</span>
+    instances<span class="token operator">:</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+    name<span class="token punctuation">,</span>
+    parent<span class="token punctuation">,</span>
+    matchAs<span class="token punctuation">,</span><span class="token comment">//路由别名</span>
+    redirect<span class="token operator">:</span> route<span class="token punctuation">.</span>redirect<span class="token punctuation">,</span> <span class="token comment">//路由重定向</span>
+    beforeEnter<span class="token operator">:</span> route<span class="token punctuation">.</span>beforeEnter<span class="token punctuation">,</span> <span class="token comment">//组件级别的路由钩子</span>
+    meta<span class="token operator">:</span> route<span class="token punctuation">.</span>meta <span class="token operator">||</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token comment">//路由元信息</span>
+    props<span class="token operator">:</span> route<span class="token punctuation">.</span>props <span class="token operator">==</span> <span class="token keyword">null</span>
+      <span class="token operator">?</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+      <span class="token operator">:</span> route<span class="token punctuation">.</span>components
+        <span class="token operator">?</span> route<span class="token punctuation">.</span>props
+        <span class="token operator">:</span> <span class="token punctuation">{</span> <span class="token keyword">default</span><span class="token operator">:</span> route<span class="token punctuation">.</span>props <span class="token punctuation">}</span> <span class="token comment">//路由跳转时的传参</span>
+  <span class="token punctuation">}</span>
+
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>route<span class="token punctuation">.</span>children<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token comment">// 递归遍历children数组执行addRouteRecord方法</span>
+    route<span class="token punctuation">.</span>children<span class="token punctuation">.</span><span class="token function">forEach</span><span class="token punctuation">(</span><span class="token parameter">child</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+      <span class="token keyword">const</span> childMatchAs <span class="token operator">=</span> matchAs
+        <span class="token operator">?</span> <span class="token function">cleanPath</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>matchAs<span class="token interpolation-punctuation punctuation">}</span></span><span class="token string">/</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>child<span class="token punctuation">.</span>path<span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span>
+        <span class="token operator">:</span> <span class="token keyword">undefined</span>
+        <span class="token comment">// 与第一次调用addRouteRecord不同的是，递归遍历children会额外传入record,childMatchAs参数</span>
+        <span class="token comment">// record是当前路由项，即子组件父路由的路由记录</span>
+      <span class="token function">addRouteRecord</span><span class="token punctuation">(</span>pathList<span class="token punctuation">,</span> pathMap<span class="token punctuation">,</span> nameMap<span class="token punctuation">,</span> child<span class="token punctuation">,</span> record<span class="token punctuation">,</span> childMatchAs<span class="token punctuation">)</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span>
+  <span class="token punctuation">}</span>
+  <span class="token comment">// 用的不多</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>route<span class="token punctuation">.</span>alias <span class="token operator">!==</span> <span class="token keyword">undefined</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">const</span> aliases <span class="token operator">=</span> Array<span class="token punctuation">.</span><span class="token function">isArray</span><span class="token punctuation">(</span>route<span class="token punctuation">.</span>alias<span class="token punctuation">)</span>
+      <span class="token operator">?</span> route<span class="token punctuation">.</span>alias
+      <span class="token operator">:</span> <span class="token punctuation">[</span>route<span class="token punctuation">.</span>alias<span class="token punctuation">]</span>
+
+    aliases<span class="token punctuation">.</span><span class="token function">forEach</span><span class="token punctuation">(</span><span class="token parameter">alias</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+      <span class="token keyword">const</span> aliasRoute <span class="token operator">=</span> <span class="token punctuation">{</span>
+        path<span class="token operator">:</span> alias<span class="token punctuation">,</span>
+        children<span class="token operator">:</span> route<span class="token punctuation">.</span>children
+      <span class="token punctuation">}</span>
+      <span class="token function">addRouteRecord</span><span class="token punctuation">(</span>
+        pathList<span class="token punctuation">,</span>
+        pathMap<span class="token punctuation">,</span>
+        nameMap<span class="token punctuation">,</span>
+        aliasRoute<span class="token punctuation">,</span>
+        parent<span class="token punctuation">,</span>
+        record<span class="token punctuation">.</span>path <span class="token operator">||</span> <span class="token string">'/'</span> <span class="token comment">// matchAs</span>
+      <span class="token punctuation">)</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span>
+  <span class="token punctuation">}</span>
+  <span class="token comment">// 递归遍历到最底部的route(叶子节点)</span>
+  <span class="token comment">// 构造pathMap和nameMap映射表</span>
+  <span class="token comment">// 第一次pathMap为空对象，后续使用addRoutes动态添加路由时会有已有的路由映射表）</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>pathMap<span class="token punctuation">[</span>record<span class="token punctuation">.</span>path<span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token comment">// pathList是一个数组，保存着routes列表中所有route的路径</span>
+    pathList<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span>record<span class="token punctuation">.</span>path<span class="token punctuation">)</span>
+    <span class="token comment">// pathMap是一个对象，保存着routes列表中所有route的记录（87）</span>
+    <span class="token comment">// 属性是route的路径，值是route的记录</span>
+    pathMap<span class="token punctuation">[</span>record<span class="token punctuation">.</span>path<span class="token punctuation">]</span> <span class="token operator">=</span> record
+  <span class="token punctuation">}</span>
+
+    <span class="token comment">// 给nameMap同样添加record对象</span>
+    <span class="token comment">// pathMap和nameMap不同的是键名，一个由path路由路径作为键,一个由name路由名称作为键</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>name<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>nameMap<span class="token punctuation">[</span>name<span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      nameMap<span class="token punctuation">[</span>name<span class="token punctuation">]</span> <span class="token operator">=</span> record
+    <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>process<span class="token punctuation">.</span>env<span class="token punctuation">.</span><span class="token constant">NODE_ENV</span> <span class="token operator">!==</span> <span class="token string">'production'</span> <span class="token operator">&amp;&amp;</span> <span class="token operator">!</span>matchAs<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token function">warn</span><span class="token punctuation">(</span>
+        <span class="token boolean">false</span><span class="token punctuation">,</span>
+        <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">Duplicate named routes definition: </span><span class="token template-punctuation string">`</span></span> <span class="token operator">+</span>
+        <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">{ name: &quot;</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>name<span class="token interpolation-punctuation punctuation">}</span></span><span class="token string">&quot;, path: &quot;</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>record<span class="token punctuation">.</span>path<span class="token interpolation-punctuation punctuation">}</span></span><span class="token string">&quot; }</span><span class="token template-punctuation string">`</span></span>
+      <span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre></div><p>通过上面的分析可以知道最终会生成的路由记录是这样的
+<img src="/vue-source-code-analysize/assets/img/2.140ce15a.png" alt="An image">
+随后因为 routes 不仅是一个数组，也是一个树形结构，所以需要进行递归的遍历，然后将路由 对象放入这3个路由映射
+表中，而这3个路由映射表的区别在于</p> <ul><li>pathList：数组，保存了 route 对象的路径</li> <li>pathMap：对象，保存了所有 route 对象对应的 record 对象</li> <li>nameMap：对象，保存了所有含有name属性的 route 对象对应的 record 对象
+可以看到pathMap和nameMap几乎是一样的，因为图中的路由有name属性，假设某个路由没name属性则只在pathMap中存在
+pathList:
+<img src="/vue-source-code-analysize/assets/img/3.e581734e.png" alt="An image">
+pathMap:
+<img src="/vue-source-code-analysize/assets/img/4.61ef3304.png" alt="An image">
+nameMap:
+<img src="/vue-source-code-analysize/assets/img/5.66214efa.png" alt="An image"></li></ul> <h2 id="creatematcher中match函数"><a href="#creatematcher中match函数" class="header-anchor">#</a> createMatcher中match函数</h2> <p>createMatcher 返回的第二个函数是 match，match 函数用于创建 $route 对象, 注意$router是new VueRouter的
+返回值，这里的$route是当前页面的路由对象,这里先用用图片看下区别
+一个正常的路由配置参数中的其中一个路由大概配置如下
+<img src="/vue-source-code-analysize/assets/img/6.5639b627.png" alt="An image">
+$route(经过 vue-router 处理后当前页面的路由对象)
+<img src="/vue-source-code-analysize/assets/img/7.be678f85.png" alt="An image">
+每次路由跳转的时候都会执行这个 match 函数重新生成一个 $route 对象，具体什么时候会触发 match 放到下篇中讲，这章
+先分析 match 函数是如何最终生成一个真正的 $route 对象的</p> <div class="language-js extra-class"><pre class="language-js"><code><span class="token keyword">function</span> <span class="token function">match</span> <span class="token punctuation">(</span>
+  raw<span class="token operator">:</span> RawLocation<span class="token punctuation">,</span> <span class="token comment">//值为location.pathname（第一次跳转）或者 location 对象</span>
+  currentRoute<span class="token operator">?</span><span class="token operator">:</span> Route<span class="token punctuation">,</span>
+  redirectedFrom<span class="token operator">?</span><span class="token operator">:</span> Location
+<span class="token punctuation">)</span><span class="token operator">:</span> Route <span class="token punctuation">{</span>
+  <span class="token comment">// 如果raw是 location.pathname 将它规范化为一个location对象（详情：test/unit/specs/location.spec.js:4）</span>
+  <span class="token keyword">const</span> location <span class="token operator">=</span> <span class="token function">normalizeLocation</span><span class="token punctuation">(</span>raw<span class="token punctuation">,</span> currentRoute<span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">,</span> router<span class="token punctuation">)</span>
+  <span class="token keyword">const</span> <span class="token punctuation">{</span> name <span class="token punctuation">}</span> <span class="token operator">=</span> location
+
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>name<span class="token punctuation">)</span> <span class="token punctuation">{</span>  <span class="token comment">// 跳转路由信息中有name属性则去nameMap映射表找对应name的记录</span>
+    <span class="token keyword">const</span> record <span class="token operator">=</span> nameMap<span class="token punctuation">[</span>name<span class="token punctuation">]</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>record<span class="token punctuation">)</span> <span class="token keyword">return</span> <span class="token function">_createRoute</span><span class="token punctuation">(</span><span class="token keyword">null</span><span class="token punctuation">,</span> location<span class="token punctuation">)</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>record<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment">/**创建route路由对象**/</span>
+      <span class="token keyword">return</span> <span class="token function">_createRoute</span><span class="token punctuation">(</span>record<span class="token punctuation">,</span> location<span class="token punctuation">,</span> redirectedFrom<span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>location<span class="token punctuation">.</span>path<span class="token punctuation">)</span> <span class="token punctuation">{</span> <span class="token comment">//否则就去pathList和pathMap根据path找对应的路由信息</span>
+    location<span class="token punctuation">.</span>params <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">let</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> pathList<span class="token punctuation">.</span>length<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token keyword">const</span> path <span class="token operator">=</span> pathList<span class="token punctuation">[</span>i<span class="token punctuation">]</span>
+      <span class="token keyword">const</span> record <span class="token operator">=</span> pathMap<span class="token punctuation">[</span>path<span class="token punctuation">]</span>
+      <span class="token comment">// 使用当前 location 的 path 属性和每个路由记录的正则属性进行匹配</span>
+      <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">matchRoute</span><span class="token punctuation">(</span>record<span class="token punctuation">.</span>regex<span class="token punctuation">,</span> location<span class="token punctuation">.</span>path<span class="token punctuation">,</span> location<span class="token punctuation">.</span>params<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+          <span class="token comment">/**结合 record 创建route路由对象**/</span>
+        <span class="token keyword">return</span> <span class="token function">_createRoute</span><span class="token punctuation">(</span>record<span class="token punctuation">,</span> location<span class="token punctuation">,</span> redirectedFrom<span class="token punctuation">)</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+  <span class="token comment">// no match</span>
+    <span class="token comment">// 创建一个匹配失败的route对象（会在视图中创建一个注释节点）</span>
+  <span class="token keyword">return</span> <span class="token function">_createRoute</span><span class="token punctuation">(</span><span class="token keyword">null</span><span class="token punctuation">,</span> location<span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+</code></pre></div><ul><li>vue-router 在 location 接口的基础上做了一些增强，添加了 name,path,hash 等 vue-router 特有的属性</li> <li>举个例子，当调用 router.push({name:&quot;comp1&quot;}) 使用 name 的形式进行路由跳转时，返回的 loaction 对象
+就会有一个 name 属性，当 name 存在时，会走到上图中的 true 逻辑，从之前 createMatcher 生成的 nameMap
+路由映射表中找到对应 name 的路由记录对象，最终会执行 _createRoute 这个方法</li> <li>调用 router.push(&quot;/comp1&quot;) 使用路径的形式进行路由跳转，同样也会返回一个 location 对象，但不会有name
+属性，走上图的false逻辑，从pathMap和pathList中找到对应的路由记录对象，最终也会执行_createRoute 这个方法</li></ul> <p>我们来看下createRoute方法</p> <div class="language-js extra-class"><pre class="language-js"><code><span class="token comment">// 创建$route对象</span>
+<span class="token keyword">export</span> <span class="token keyword">function</span> <span class="token function">createRoute</span> <span class="token punctuation">(</span>
+  <span class="token parameter">record<span class="token operator">:</span> <span class="token operator">?</span>RouteRecord<span class="token punctuation">,</span>
+  location<span class="token operator">:</span> Location<span class="token punctuation">,</span>
+  redirectedFrom<span class="token operator">?</span><span class="token operator">:</span> <span class="token operator">?</span>Location<span class="token punctuation">,</span>
+  router<span class="token operator">?</span><span class="token operator">:</span> VueRouter</span>
+<span class="token punctuation">)</span><span class="token operator">:</span> Route <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> stringifyQuery <span class="token operator">=</span> router <span class="token operator">&amp;&amp;</span> router<span class="token punctuation">.</span>options<span class="token punctuation">.</span>stringifyQuery
+
+  <span class="token keyword">let</span> query<span class="token operator">:</span> any <span class="token operator">=</span> location<span class="token punctuation">.</span>query <span class="token operator">||</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+  <span class="token comment">// 深拷贝query对象</span>
+  <span class="token keyword">try</span> <span class="token punctuation">{</span>
+    query <span class="token operator">=</span> <span class="token function">clone</span><span class="token punctuation">(</span>query<span class="token punctuation">)</span>
+  <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span>e<span class="token punctuation">)</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+
+  <span class="token keyword">const</span> route<span class="token operator">:</span> Route <span class="token operator">=</span> <span class="token punctuation">{</span>
+    name<span class="token operator">:</span> location<span class="token punctuation">.</span>name <span class="token operator">||</span> <span class="token punctuation">(</span>record <span class="token operator">&amp;&amp;</span> record<span class="token punctuation">.</span>name<span class="token punctuation">)</span><span class="token punctuation">,</span>
+    meta<span class="token operator">:</span> <span class="token punctuation">(</span>record <span class="token operator">&amp;&amp;</span> record<span class="token punctuation">.</span>meta<span class="token punctuation">)</span> <span class="token operator">||</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+    path<span class="token operator">:</span> location<span class="token punctuation">.</span>path <span class="token operator">||</span> <span class="token string">'/'</span><span class="token punctuation">,</span>
+    hash<span class="token operator">:</span> location<span class="token punctuation">.</span>hash <span class="token operator">||</span> <span class="token string">''</span><span class="token punctuation">,</span>
+    query<span class="token punctuation">,</span>
+    params<span class="token operator">:</span> location<span class="token punctuation">.</span>params <span class="token operator">||</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+    fullPath<span class="token operator">:</span> <span class="token function">getFullPath</span><span class="token punctuation">(</span>location<span class="token punctuation">,</span> stringifyQuery<span class="token punctuation">)</span><span class="token punctuation">,</span>
+    <span class="token comment">/**返回当前的路由记录以及所有的父路由的记录（父 =&gt; 子）**/</span>
+    <span class="token comment">// matched 是一个数组，每个元素都是一个路由记录</span>
+    matched<span class="token operator">:</span> record <span class="token operator">?</span> <span class="token function">formatMatch</span><span class="token punctuation">(</span>record<span class="token punctuation">)</span> <span class="token operator">:</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+  <span class="token punctuation">}</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>redirectedFrom<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    route<span class="token punctuation">.</span>redirectedFrom <span class="token operator">=</span> <span class="token function">getFullPath</span><span class="token punctuation">(</span>redirectedFrom<span class="token punctuation">,</span> stringifyQuery<span class="token punctuation">)</span>
+  <span class="token punctuation">}</span>
+  <span class="token keyword">return</span> Object<span class="token punctuation">.</span><span class="token function">freeze</span><span class="token punctuation">(</span>route<span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+<span class="token comment">// 根据当前路径匹配到的 record 和它的所有父级生成一个match数组</span>
+<span class="token keyword">function</span> <span class="token function">formatMatch</span> <span class="token punctuation">(</span><span class="token parameter">record<span class="token operator">:</span> <span class="token operator">?</span>RouteRecord</span><span class="token punctuation">)</span><span class="token operator">:</span> Array<span class="token operator">&lt;</span>RouteRecord<span class="token operator">&gt;</span> <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> res <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+    <span class="token comment">// 递归遍历当前路由和所有父路由放入match数组中 [父=》子]</span>
+  <span class="token keyword">while</span> <span class="token punctuation">(</span>record<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    res<span class="token punctuation">.</span><span class="token function">unshift</span><span class="token punctuation">(</span>record<span class="token punctuation">)</span>
+    record <span class="token operator">=</span> record<span class="token punctuation">.</span>parent
+  <span class="token punctuation">}</span>
+  <span class="token keyword">return</span> res
+<span class="token punctuation">}</span>
+</code></pre></div><p>最终会生成如下这个 matched 数组最终会决定触发哪些路由组件的哪些路由守卫钩子，关于路由钩子部分我们放到下篇来说
+<img src="/vue-source-code-analysize/assets/img/8.8ad72617.png" alt="An image">
+这里画了一张流程图来表达实例化 vue-router 时的 matcher 属性内部的依赖关系
+<img src="/vue-source-code-analysize/assets/img/9.5c177e3d.png" alt="An image"></p> <h2 id="生成-history-路由实例"><a href="#生成-history-路由实例" class="header-anchor">#</a> 生成 history 路由实例</h2> <p>再次回到图3，vue-router 根据传入参数的 mode 属性来实例化不同的路由类（HTML5，hash，abstract），这
+也是官方提供给开发者的3种不同的选择来生成路由，之后根据 history 的类型，采取不同的方式切换路由和监听路由变化的方式</p> <ul><li><p>HTML5 路由是相对比较美观的一种路由，和正常的 url 显示没有什么区别，核心依靠 pushState 和 replaceState来
+实现不向后端发送请求的路由跳转，但是这类似一层“伪装”，当用户点击刷新按钮时就会暴露，最后还是会发送请求，导致找不
+到页面的情况，所以需要配合 nginx 来实现找不到页面时返回主页的操作</p></li> <li><p>hash路由是默认使用的路由，在url中会存在一个#号，核心依靠这个#号也就是曾经作为路由的锚点来实现不向后端发送请求的路由跳转</p></li> <li><p>abstract路由是一种抽象路由，用在非浏览器端，维护一种抽象的路由结构，使得能够嫁接在客户端或者服务端等没history路由的地方</p></li></ul></div> <footer class="page-edit"><!----> <!----></footer> <div class="page-nav"><p class="inner"><span class="prev">
+      ←
+      <a href="/vue-source-code-analysize/vuex/vuex-help.html" class="prev">辅助函数介绍</a></span> <span class="next"><a href="/vue-source-code-analysize/vueRouter/two.html">路由原理</a>
+      →
+    </span></p></div> </main></div><div class="global-ui"></div></div>
+    <script src="/vue-source-code-analysize/assets/js/app.b763ca3b.js" defer></script><script src="/vue-source-code-analysize/assets/js/2.d9983486.js" defer></script><script src="/vue-source-code-analysize/assets/js/5.6a87b23f.js" defer></script>
+  </body>
+</html>

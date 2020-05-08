@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>编译函数 | 前端学习</title>
+    <meta name="description" content="前端技术底层实现">
+    
+    
+    <link rel="preload" href="/vue-source-code-analysize/assets/css/0.styles.6bdd7a3f.css" as="style"><link rel="preload" href="/vue-source-code-analysize/assets/js/app.b763ca3b.js" as="script"><link rel="preload" href="/vue-source-code-analysize/assets/js/2.d9983486.js" as="script"><link rel="preload" href="/vue-source-code-analysize/assets/js/12.fb125ffe.js" as="script"><link rel="prefetch" href="/vue-source-code-analysize/assets/js/10.647aa5c0.js"><link rel="prefetch" href="/vue-source-code-analysize/assets/js/11.c33a6322.js"><link rel="prefetch" href="/vue-source-code-analysize/assets/js/13.c788a33f.js"><link rel="prefetch" href="/vue-source-code-analysize/assets/js/14.da7cfa92.js"><link rel="prefetch" href="/vue-source-code-analysize/assets/js/15.9e7ba6b6.js"><link rel="prefetch" href="/vue-source-code-analysize/assets/js/16.a6c3c4a5.js"><link rel="prefetch" href="/vue-source-code-analysize/assets/js/17.6199def5.js"><link rel="prefetch" href="/vue-source-code-analysize/assets/js/18.52b45891.js"><link rel="prefetch" href="/vue-source-code-analysize/assets/js/19.4e9eea1b.js"><link rel="prefetch" href="/vue-source-code-analysize/assets/js/20.daa69c1d.js"><link rel="prefetch" href="/vue-source-code-analysize/assets/js/21.5bc4eca1.js"><link rel="prefetch" href="/vue-source-code-analysize/assets/js/22.2c21b5ba.js"><link rel="prefetch" href="/vue-source-code-analysize/assets/js/23.81195dcf.js"><link rel="prefetch" href="/vue-source-code-analysize/assets/js/24.cb0b0283.js"><link rel="prefetch" href="/vue-source-code-analysize/assets/js/25.aaeb364b.js"><link rel="prefetch" href="/vue-source-code-analysize/assets/js/3.f763d6bc.js"><link rel="prefetch" href="/vue-source-code-analysize/assets/js/4.859fd439.js"><link rel="prefetch" href="/vue-source-code-analysize/assets/js/5.6a87b23f.js"><link rel="prefetch" href="/vue-source-code-analysize/assets/js/6.4b3a66c2.js"><link rel="prefetch" href="/vue-source-code-analysize/assets/js/7.c0610b4a.js"><link rel="prefetch" href="/vue-source-code-analysize/assets/js/8.e2299770.js"><link rel="prefetch" href="/vue-source-code-analysize/assets/js/9.da2cd365.js">
+    <link rel="stylesheet" href="/vue-source-code-analysize/assets/css/0.styles.6bdd7a3f.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container"><header class="navbar"><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/vue-source-code-analysize/" class="home-link router-link-active"><!----> <span class="site-name">前端学习</span></a> <div class="links"><div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><a href="https://github.com/limingkang" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  gitHub
+  <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></div> <!----></nav></div></header> <div class="sidebar-mask"></div> <aside class="sidebar"><nav class="nav-links"><div class="nav-item"><a href="https://github.com/limingkang" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  gitHub
+  <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></div> <!----></nav>  <ul class="sidebar-links"><li><section class="sidebar-group depth-0"><a href="/vue-source-code-analysize/" class="sidebar-heading clickable router-link-active open"><span>vue3源码</span> <!----></a> <ul class="sidebar-links sidebar-group-items"><li><a href="/vue-source-code-analysize/techAccumulate/vue-rfc.html" class="sidebar-link">vue3和2响应式对比</a></li><li><a href="/vue-source-code-analysize/vueReactive/code-analsize.html" class="sidebar-link">vue3响应式源码讲解</a></li><li><a href="/vue-source-code-analysize/easyInit/init.html" class="sidebar-link">核心渲染函数介绍</a></li><li><a href="/vue-source-code-analysize/render/render.html" class="sidebar-link">渲染流程介绍</a></li><li><a href="/vue-source-code-analysize/domDiff/dom-diff.html" class="sidebar-link">dom diff</a></li><li><a href="/vue-source-code-analysize/compiler/compiler.html" class="active sidebar-link">编译函数介绍</a><ul class="sidebar-sub-headers"><li class="sidebar-sub-header"><a href="/vue-source-code-analysize/compiler/compiler.html#相比vue2的优化点" class="sidebar-link">相比vue2的优化点</a></li><li class="sidebar-sub-header"><a href="/vue-source-code-analysize/compiler/compiler.html#整体编译流程" class="sidebar-link">整体编译流程</a></li><li class="sidebar-sub-header"><a href="/vue-source-code-analysize/compiler/compiler.html#transform方法的实现" class="sidebar-link">transform方法的实现</a></li><li class="sidebar-sub-header"><a href="/vue-source-code-analysize/compiler/compiler.html#generate方法实现" class="sidebar-link">generate方法实现</a></li></ul></li></ul></section></li><li><section class="sidebar-group depth-0"><p class="sidebar-heading"><span>vuex源码</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/vue-source-code-analysize/vuex/vuex-start.html" class="sidebar-link">vuex初识</a></li><li><a href="/vue-source-code-analysize/vuex/vuex-module.html" class="sidebar-link">vuex模块部分</a></li><li><a href="/vue-source-code-analysize/vuex/vuex-analyzed.html" class="sidebar-link">初始化挂载vue</a></li><li><a href="/vue-source-code-analysize/vuex/vuex-api.html" class="sidebar-link">实例的api</a></li><li><a href="/vue-source-code-analysize/vuex/vuex-help.html" class="sidebar-link">辅助函数介绍</a></li></ul></section></li><li><section class="sidebar-group depth-0"><p class="sidebar-heading"><span>vue-router源码</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/vue-source-code-analysize/vueRouter/start.html" class="sidebar-link">整体介绍</a></li><li><a href="/vue-source-code-analysize/vueRouter/two.html" class="sidebar-link">路由原理</a></li><li><a href="/vue-source-code-analysize/vueRouter/three.html" class="sidebar-link">路由守卫的生成</a></li></ul></section></li><li><section class="sidebar-group depth-0"><p class="sidebar-heading"><span>源码实现</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/vue-source-code-analysize/webpack/webpack.html" class="sidebar-link">webpack打包原理</a></li><li><a href="/vue-source-code-analysize/promise/promise.html" class="sidebar-link">promise</a></li><li><a href="/vue-source-code-analysize/promise/await.html" class="sidebar-link">async、await原理</a></li><li><a href="/vue-source-code-analysize/promise/class.html" class="sidebar-link">class原理</a></li></ul></section></li></ul> </aside> <main class="page"> <div class="theme-default-content content__default"><h1 id="编译函数"><a href="#编译函数" class="header-anchor">#</a> 编译函数</h1> <h2 id="相比vue2的优化点"><a href="#相比vue2的优化点" class="header-anchor">#</a> 相比vue2的优化点</h2> <p>最终生成的编译函数其实就是调用compiler-dom/src/index.ts里面的compile方法</p> <div class="language-js extra-class"><pre class="language-js"><code><span class="token keyword">export</span> <span class="token keyword">function</span> <span class="token function">compile</span><span class="token punctuation">(</span>
+  <span class="token parameter">template<span class="token operator">:</span> string<span class="token punctuation">,</span>
+  options<span class="token operator">:</span> CompilerOptions <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token punctuation">}</span></span>
+<span class="token punctuation">)</span><span class="token operator">:</span> CodegenResult <span class="token punctuation">{</span>
+  <span class="token keyword">return</span> <span class="token function">baseCompile</span><span class="token punctuation">(</span>template<span class="token punctuation">,</span> <span class="token punctuation">{</span>
+    <span class="token operator">...</span>options<span class="token punctuation">,</span>
+    <span class="token operator">...</span><span class="token punctuation">(</span>__BROWSER__ <span class="token operator">?</span> parserOptionsMinimal <span class="token operator">:</span> parserOptionsStandard<span class="token punctuation">)</span><span class="token punctuation">,</span>
+    nodeTransforms<span class="token operator">:</span> <span class="token punctuation">[</span>transformStyle<span class="token punctuation">,</span> <span class="token operator">...</span><span class="token punctuation">(</span>options<span class="token punctuation">.</span>nodeTransforms <span class="token operator">||</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+    directiveTransforms<span class="token operator">:</span> <span class="token punctuation">{</span>
+      cloak<span class="token operator">:</span> transformCloak<span class="token punctuation">,</span>  <span class="token comment">// 根据浏览器实现特定的指令编译方法，传给核心编译函数</span>
+      html<span class="token operator">:</span> transformVHtml<span class="token punctuation">,</span>
+      text<span class="token operator">:</span> transformVText<span class="token punctuation">,</span>
+      model<span class="token operator">:</span> transformModel<span class="token punctuation">,</span> <span class="token comment">// override compiler-core</span>
+      on<span class="token operator">:</span> transformOn<span class="token punctuation">,</span>
+      <span class="token operator">...</span><span class="token punctuation">(</span>options<span class="token punctuation">.</span>directiveTransforms <span class="token operator">||</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+</code></pre></div><p>核心的编译函数compiler-core文件夹下面目录结构：</p> <ul><li>tests 测试用例</li> <li>src/ast ts语法的大佬的类型定义，比如type，enum，interface等</li> <li>src/codegen 将生成的ast转换成render字符串</li> <li>src/errors 定义 compiler 错误类型</li> <li>src/index 入口文件，主要有一个 baseCompile ，用来编译模板文件的</li> <li>src/parse 将模板字符串转换成 AST</li> <li>src/runtimeHelper 生成code的时候的定义常量对应关系</li> <li>src/transform 处理 AST 中的 vue 特有语法，比如 v-if ,v-on 的解析</li></ul> <div class="language-js extra-class"><pre class="language-js"><code><span class="token comment">// 可以运行一个简单的例子</span>
+<span class="token keyword">const</span> source <span class="token operator">=</span> <span class="token operator">&lt;</span>div id<span class="token operator">=</span><span class="token string">&quot;test&quot;</span> <span class="token operator">:</span><span class="token keyword">class</span><span class="token operator">=</span><span class="token string">&quot;cls&quot;</span><span class="token operator">&gt;</span>
+        <span class="token operator">&lt;</span>span<span class="token operator">&gt;</span><span class="token punctuation">{</span><span class="token punctuation">{</span> name <span class="token punctuation">}</span><span class="token punctuation">}</span><span class="token operator">&lt;</span><span class="token operator">/</span>span<span class="token operator">&gt;</span>
+        <span class="token operator">&lt;</span>MyCom<span class="token operator">&gt;</span><span class="token operator">&lt;</span><span class="token operator">/</span>MyCom<span class="token operator">&gt;</span>
+    <span class="token operator">&lt;</span><span class="token operator">/</span>div<span class="token operator">&gt;</span><span class="token punctuation">.</span><span class="token function">trim</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span> parse <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'./compiler-core.cjs'</span>
+<span class="token keyword">const</span> result <span class="token operator">=</span> <span class="token function">parse</span><span class="token punctuation">(</span>source<span class="token punctuation">)</span>
+</code></pre></div><p>一个简单的转换结果就呈现出来了，从生成的结构来看，相对于vue2.x有几个比较重要的变化：</p> <ul><li>新增了 loc 属性 每一个节点都记录了该节点在源码当中的 start 和 end，标识了代码的详细位置，column,line,offset,
+vu3.0对于开发遇到的问题都要详细的日志输出也基于此，另外支持 source-map</li> <li>新增了 tagType 属性,tagType 属性标识该节点是什么类型的。我们知道 vue2.x 判断节点类型是运行时才有的，vu3.0将
+判断提前到编译阶段了，提升了性能;目前tagType有三种类型：0 element,1 component,2 slot,3 template</li> <li>新增 isStatic 属性将模板提前编译好，标识是否为动态变化的，比如动态指令</li></ul> <p>新版的 AST 明显比 vue2.x 要复杂些，可以看到vue3.0将很多可以在编译阶段就能确定的就在编译阶段确定，标识编译结果，不
+需要等到运行时再去判断，节省内存和性能。这个也是尤大大重点说了的，优化编译，提升性能,转换的代码，主要有如下几个方法：</p> <ul><li>parse &amp; parseChildren 主入口</li> <li>parseTag 处理标签</li> <li>parseAttribute 处理标签上的属性</li> <li>parseElement 处理起始标签</li> <li>parseInterpolation 处理动态文本内容</li> <li>parseText 处理静态文本内容</li></ul> <h2 id="整体编译流程"><a href="#整体编译流程" class="header-anchor">#</a> 整体编译流程</h2> <p>上面说到最终的编译方法其实就是调用compiler-core/index.ts下的baseCompile方法</p> <div class="language-js extra-class"><pre class="language-js"><code><span class="token keyword">export</span> <span class="token keyword">function</span> <span class="token function">baseCompile</span><span class="token punctuation">(</span>
+  <span class="token parameter">template<span class="token operator">:</span> string <span class="token operator">|</span> RootNode<span class="token punctuation">,</span>
+  options<span class="token operator">:</span> CompilerOptions <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token punctuation">}</span></span>
+<span class="token punctuation">)</span><span class="token operator">:</span> CodegenResult <span class="token punctuation">{</span>
+  <span class="token comment">/* istanbul ignore if */</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>__BROWSER__<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">const</span> onError <span class="token operator">=</span> options<span class="token punctuation">.</span>onError <span class="token operator">||</span> defaultOnError
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>options<span class="token punctuation">.</span>prefixIdentifiers <span class="token operator">===</span> <span class="token boolean">true</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token function">onError</span><span class="token punctuation">(</span><span class="token function">createCompilerError</span><span class="token punctuation">(</span>ErrorCodes<span class="token punctuation">.</span><span class="token constant">X_PREFIX_ID_NOT_SUPPORTED</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+    <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>options<span class="token punctuation">.</span>mode <span class="token operator">===</span> <span class="token string">'module'</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token function">onError</span><span class="token punctuation">(</span><span class="token function">createCompilerError</span><span class="token punctuation">(</span>ErrorCodes<span class="token punctuation">.</span><span class="token constant">X_MODULE_MODE_NOT_SUPPORTED</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+  <span class="token comment">// 词法解析</span>
+  <span class="token keyword">const</span> ast <span class="token operator">=</span> <span class="token function">isString</span><span class="token punctuation">(</span>template<span class="token punctuation">)</span> <span class="token operator">?</span> <span class="token function">parse</span><span class="token punctuation">(</span>template<span class="token punctuation">,</span> options<span class="token punctuation">)</span> <span class="token operator">:</span> template
+  <span class="token keyword">const</span> prefixIdentifiers <span class="token operator">=</span>
+    <span class="token operator">!</span>__BROWSER__ <span class="token operator">&amp;&amp;</span>
+    <span class="token punctuation">(</span>options<span class="token punctuation">.</span>prefixIdentifiers <span class="token operator">===</span> <span class="token boolean">true</span> <span class="token operator">||</span> options<span class="token punctuation">.</span>mode <span class="token operator">===</span> <span class="token string">'module'</span><span class="token punctuation">)</span>
+  <span class="token comment">// 对这个抽象语法树进行静态节点的标记，这样就可以优化渲染过程</span>
+  <span class="token comment">// 优化器的目的就是去找出 AST 中纯静态的子树：</span>
+  <span class="token comment">// 把纯静态子树提升为常量，每次重新渲染的时候就不需要创建新的节点了</span>
+  <span class="token comment">// 并且要翻译if on等自定义的指令</span>
+  <span class="token function">transform</span><span class="token punctuation">(</span>ast<span class="token punctuation">,</span> <span class="token punctuation">{</span>
+    <span class="token operator">...</span>options<span class="token punctuation">,</span>
+    prefixIdentifiers<span class="token punctuation">,</span>
+    nodeTransforms<span class="token operator">:</span> <span class="token punctuation">[</span>
+      transformIf<span class="token punctuation">,</span>
+      transformFor<span class="token punctuation">,</span>
+      <span class="token operator">...</span><span class="token punctuation">(</span>prefixIdentifiers
+        <span class="token operator">?</span> <span class="token punctuation">[</span>
+            <span class="token comment">// order is important</span>
+            trackVForSlotScopes<span class="token punctuation">,</span>
+            transformExpression
+          <span class="token punctuation">]</span>
+        <span class="token operator">:</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+      transformSlotOutlet<span class="token punctuation">,</span>
+      transformElement<span class="token punctuation">,</span>
+      trackSlotScopes<span class="token punctuation">,</span>
+      optimizeText<span class="token punctuation">,</span>
+      <span class="token operator">...</span><span class="token punctuation">(</span>options<span class="token punctuation">.</span>nodeTransforms <span class="token operator">||</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token comment">// user transforms</span>
+    <span class="token punctuation">]</span><span class="token punctuation">,</span>
+    directiveTransforms<span class="token operator">:</span> <span class="token punctuation">{</span>
+      on<span class="token operator">:</span> transformOn<span class="token punctuation">,</span>
+      bind<span class="token operator">:</span> transformBind<span class="token punctuation">,</span>
+      once<span class="token operator">:</span> transformOnce<span class="token punctuation">,</span>
+      model<span class="token operator">:</span> transformModel<span class="token punctuation">,</span>
+      <span class="token operator">...</span><span class="token punctuation">(</span>options<span class="token punctuation">.</span>directiveTransforms <span class="token operator">||</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">)</span> <span class="token comment">// user transforms</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span><span class="token punctuation">)</span>
+  <span class="token comment">// 根据 AST 生成一个 render 函数字符串</span>
+  <span class="token keyword">return</span> <span class="token function">generate</span><span class="token punctuation">(</span>ast<span class="token punctuation">,</span> <span class="token punctuation">{</span>
+    <span class="token operator">...</span>options<span class="token punctuation">,</span>
+    prefixIdentifiers
+  <span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+</code></pre></div><h2 id="transform方法的实现"><a href="#transform方法的实现" class="header-anchor">#</a> transform方法的实现</h2> <div class="language-js extra-class"><pre class="language-js"><code><span class="token comment">// 大概的简化方法</span>
+<span class="token keyword">function</span> <span class="token function">createTransformContext</span><span class="token punctuation">(</span>
+  root<span class="token operator">:</span> RootNode<span class="token punctuation">,</span>
+  <span class="token punctuation">{</span>
+    prefixIdentifiers <span class="token operator">=</span> <span class="token boolean">false</span><span class="token punctuation">,</span>
+    hoistStatic <span class="token operator">=</span> <span class="token boolean">false</span><span class="token punctuation">,</span>   <span class="token comment">//标记是否是静态节点</span>
+    nodeTransforms <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+    directiveTransforms <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+    onError <span class="token operator">=</span> defaultOnError
+  <span class="token punctuation">}</span><span class="token operator">:</span> TransformOptions
+<span class="token punctuation">)</span><span class="token operator">:</span> TransformContext <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> context<span class="token operator">:</span> TransformContext <span class="token operator">=</span> <span class="token punctuation">{</span>
+    root<span class="token punctuation">,</span>
+    helpers<span class="token operator">:</span> <span class="token keyword">new</span> <span class="token class-name">Set</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    components<span class="token operator">:</span> <span class="token keyword">new</span> <span class="token class-name">Set</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    directives<span class="token operator">:</span> <span class="token keyword">new</span> <span class="token class-name">Set</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    hoists<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+    identifiers<span class="token operator">:</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+    scopes<span class="token operator">:</span> <span class="token punctuation">{</span>
+      vFor<span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+      vSlot<span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+      vPre<span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+      vOnce<span class="token operator">:</span> <span class="token number">0</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    prefixIdentifiers<span class="token punctuation">,</span>
+    hoistStatic<span class="token punctuation">,</span>
+    nodeTransforms<span class="token punctuation">,</span>
+    directiveTransforms<span class="token punctuation">,</span>
+    onError<span class="token punctuation">,</span>
+    parent<span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+    currentNode<span class="token operator">:</span> root<span class="token punctuation">,</span>
+    childIndex<span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+    <span class="token function">helper</span><span class="token punctuation">(</span><span class="token parameter">name</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>   <span class="token comment">//保存编译时候需要使用的vue的方法的映射</span>
+      context<span class="token punctuation">.</span>helpers<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>name<span class="token punctuation">)</span>
+      <span class="token keyword">return</span> name
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token comment">// 当有静态节点时候内部保存变量就是_hoisted_1慢慢往后加</span>
+    <span class="token function">hoist</span><span class="token punctuation">(</span><span class="token parameter">exp</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      context<span class="token punctuation">.</span>hoists<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span>exp<span class="token punctuation">)</span>
+      <span class="token keyword">return</span> <span class="token function">createSimpleExpression</span><span class="token punctuation">(</span>
+        <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">_hoisted_</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>context<span class="token punctuation">.</span>hoists<span class="token punctuation">.</span>length<span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span><span class="token punctuation">,</span>
+        <span class="token boolean">false</span><span class="token punctuation">,</span>
+        exp<span class="token punctuation">.</span>loc
+      <span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+<span class="token keyword">export</span> <span class="token keyword">function</span> <span class="token function">transform</span><span class="token punctuation">(</span><span class="token parameter">root<span class="token operator">:</span> RootNode<span class="token punctuation">,</span> options<span class="token operator">:</span> TransformOptions</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token comment">// 创建总节点上下文</span>
+  <span class="token keyword">const</span> context <span class="token operator">=</span> <span class="token function">createTransformContext</span><span class="token punctuation">(</span>root<span class="token punctuation">,</span> options<span class="token punctuation">)</span>
+  <span class="token comment">// 方法内部编译所有节点</span>
+  <span class="token function">traverseNode</span><span class="token punctuation">(</span>root<span class="token punctuation">,</span> context<span class="token punctuation">)</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>options<span class="token punctuation">.</span>hoistStatic<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token comment">// 静态节点标记</span>
+    <span class="token function">hoistStatic</span><span class="token punctuation">(</span>root<span class="token punctuation">,</span> context<span class="token punctuation">)</span>
+  <span class="token punctuation">}</span>
+  <span class="token function">finalizeRoot</span><span class="token punctuation">(</span>root<span class="token punctuation">,</span> context<span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+<span class="token keyword">export</span> <span class="token keyword">function</span> <span class="token function">traverseNode</span><span class="token punctuation">(</span>
+  <span class="token parameter">node<span class="token operator">:</span> RootNode <span class="token operator">|</span> TemplateChildNode<span class="token punctuation">,</span>
+  context<span class="token operator">:</span> TransformContext</span>
+<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token comment">// 该方法循环会触发多次，一层层往下遍历解析编译</span>
+  <span class="token comment">// 获取所有编译指令的方法，如编译if on等指令</span>
+  <span class="token keyword">const</span> <span class="token punctuation">{</span> nodeTransforms <span class="token punctuation">}</span> <span class="token operator">=</span> context
+  <span class="token keyword">const</span> exitFns <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+  <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">let</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> nodeTransforms<span class="token punctuation">.</span>length<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">const</span> onExit <span class="token operator">=</span> nodeTransforms<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">(</span>node<span class="token punctuation">,</span> context<span class="token punctuation">)</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>onExit<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">isArray</span><span class="token punctuation">(</span>onExit<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        exitFns<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span><span class="token operator">...</span>onExit<span class="token punctuation">)</span>
+      <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+        exitFns<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span>onExit<span class="token punctuation">)</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>context<span class="token punctuation">.</span>currentNode<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token comment">// node was removed</span>
+      <span class="token keyword">return</span>
+    <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+      <span class="token comment">// 编译解析子children节点，在traverseChildren方法里面会赋值</span>
+      node <span class="token operator">=</span> context<span class="token punctuation">.</span>currentNode
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+  <span class="token comment">// 文本节点时候就不会走进switch方法，而且上面的exitFns为空</span>
+  <span class="token keyword">switch</span> <span class="token punctuation">(</span>node<span class="token punctuation">.</span>type<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">case</span> NodeTypes<span class="token punctuation">.</span><span class="token constant">COMMENT</span><span class="token operator">:</span>
+      <span class="token comment">// inject import for the Comment symbol, which is needed for creating</span>
+      <span class="token comment">// comment nodes with `createVNode`</span>
+      context<span class="token punctuation">.</span><span class="token function">helper</span><span class="token punctuation">(</span><span class="token constant">CREATE_VNODE</span><span class="token punctuation">)</span>
+      context<span class="token punctuation">.</span><span class="token function">helper</span><span class="token punctuation">(</span><span class="token constant">COMMENT</span><span class="token punctuation">)</span>
+      <span class="token keyword">break</span>
+    <span class="token keyword">case</span> NodeTypes<span class="token punctuation">.</span><span class="token constant">INTERPOLATION</span><span class="token operator">:</span>
+      <span class="token comment">// no need to traverse, but we need to inject toString helper</span>
+      context<span class="token punctuation">.</span><span class="token function">helper</span><span class="token punctuation">(</span><span class="token constant">TO_STRING</span><span class="token punctuation">)</span>
+      <span class="token keyword">break</span>
+
+    <span class="token comment">// if容器类型，进一步遍历他的分支</span>
+    <span class="token keyword">case</span> NodeTypes<span class="token punctuation">.</span><span class="token constant">IF</span><span class="token operator">:</span>
+      <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">let</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> node<span class="token punctuation">.</span>branches<span class="token punctuation">.</span>length<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment">// 内部还是调用traverseNode方法</span>
+        <span class="token function">traverseChildren</span><span class="token punctuation">(</span>node<span class="token punctuation">.</span>branches<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">,</span> context<span class="token punctuation">)</span>
+      <span class="token punctuation">}</span>
+      <span class="token keyword">break</span>
+    <span class="token keyword">case</span> NodeTypes<span class="token punctuation">.</span><span class="token constant">FOR</span><span class="token operator">:</span>
+    <span class="token keyword">case</span> NodeTypes<span class="token punctuation">.</span><span class="token constant">ELEMENT</span><span class="token operator">:</span>
+    <span class="token keyword">case</span> NodeTypes<span class="token punctuation">.</span><span class="token constant">ROOT</span><span class="token operator">:</span>
+      <span class="token function">traverseChildren</span><span class="token punctuation">(</span>node<span class="token punctuation">,</span> context<span class="token punctuation">)</span>
+      <span class="token keyword">break</span>
+  <span class="token punctuation">}</span>
+
+  <span class="token comment">// exit transforms</span>
+  <span class="token keyword">let</span> i <span class="token operator">=</span> exitFns<span class="token punctuation">.</span>length
+  <span class="token keyword">while</span> <span class="token punctuation">(</span>i<span class="token operator">--</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    exitFns<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre></div><p>静态节点标记的方法hoistStatic.ts</p> <div class="language-js extra-class"><pre class="language-js"><code><span class="token keyword">export</span> <span class="token keyword">function</span> <span class="token function">hoistStatic</span><span class="token punctuation">(</span><span class="token parameter">root<span class="token operator">:</span> RootNode<span class="token punctuation">,</span> context<span class="token operator">:</span> TransformContext</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token function">walk</span><span class="token punctuation">(</span>
+    root<span class="token punctuation">.</span>children<span class="token punctuation">,</span>
+    context<span class="token punctuation">,</span>
+    <span class="token keyword">new</span> <span class="token class-name">Map</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    <span class="token function">isSingleElementRoot</span><span class="token punctuation">(</span>root<span class="token punctuation">,</span> root<span class="token punctuation">.</span>children<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+  <span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+<span class="token keyword">function</span> <span class="token function">walk</span><span class="token punctuation">(</span>
+  <span class="token parameter">children<span class="token operator">:</span> TemplateChildNode<span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+  context<span class="token operator">:</span> TransformContext<span class="token punctuation">,</span>
+  resultCache<span class="token operator">:</span> Map<span class="token operator">&lt;</span>TemplateChildNode<span class="token punctuation">,</span> boolean<span class="token operator">&gt;</span><span class="token punctuation">,</span>
+  doNotHoistNode<span class="token operator">:</span> boolean <span class="token operator">=</span> <span class="token boolean">false</span></span>
+<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">let</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> children<span class="token punctuation">.</span>length<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">const</span> child <span class="token operator">=</span> children<span class="token punctuation">[</span>i<span class="token punctuation">]</span>
+    <span class="token comment">// only plain elements are eligible for hoisting.</span>
+    <span class="token comment">// 只有标签节点才可能是静态的, 这里循环处理动态节点，保存到上下文context的hoist上</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>
+      child<span class="token punctuation">.</span>type <span class="token operator">===</span> NodeTypes<span class="token punctuation">.</span><span class="token constant">ELEMENT</span> <span class="token operator">&amp;&amp;</span>
+      child<span class="token punctuation">.</span>tagType <span class="token operator">===</span> ElementTypes<span class="token punctuation">.</span><span class="token constant">ELEMENT</span>
+    <span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token keyword">if</span> <span class="token punctuation">(</span>
+        <span class="token operator">!</span>doNotHoistNode <span class="token operator">&amp;&amp;</span>
+        <span class="token function">isStaticNode</span><span class="token punctuation">(</span>child<span class="token punctuation">,</span> resultCache<span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span>   <span class="token comment">//彻底检查一个节点是否是纯静态节点</span>
+        <span class="token operator">!</span><span class="token function">hasDynamicKeyOrRef</span><span class="token punctuation">(</span>child<span class="token punctuation">)</span>
+      <span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment">// 如果整个节点是静止的，那么将其原始的codegenNode保存在上下文的context上</span>
+        child<span class="token punctuation">.</span>codegenNode <span class="token operator">=</span> context<span class="token punctuation">.</span><span class="token function">hoist</span><span class="token punctuation">(</span>child<span class="token punctuation">.</span>codegenNode<span class="token operator">!</span><span class="token punctuation">)</span>
+        <span class="token keyword">continue</span>
+      <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+        <span class="token comment">// 节点可能包含动态子节点，但是他的props属性或许可以是静态的</span>
+        <span class="token keyword">const</span> flag <span class="token operator">=</span> <span class="token function">getPatchFlag</span><span class="token punctuation">(</span>child<span class="token punctuation">)</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>
+          <span class="token punctuation">(</span><span class="token operator">!</span>flag <span class="token operator">||</span>
+            flag <span class="token operator">===</span> PatchFlags<span class="token punctuation">.</span><span class="token constant">NEED_PATCH</span> <span class="token operator">||</span>
+            flag <span class="token operator">===</span> PatchFlags<span class="token punctuation">.</span><span class="token constant">TEXT</span><span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span>
+          <span class="token operator">!</span><span class="token function">hasDynamicKeyOrRef</span><span class="token punctuation">(</span>child<span class="token punctuation">)</span>
+        <span class="token punctuation">)</span> <span class="token punctuation">{</span>
+          <span class="token keyword">let</span> codegenNode <span class="token operator">=</span> child<span class="token punctuation">.</span>codegenNode <span class="token keyword">as</span> ElementCodegenNode
+          <span class="token keyword">if</span> <span class="token punctuation">(</span>codegenNode<span class="token punctuation">.</span>callee <span class="token operator">===</span> <span class="token constant">APPLY_DIRECTIVES</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            codegenNode <span class="token operator">=</span> codegenNode<span class="token punctuation">.</span>arguments<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span>
+          <span class="token punctuation">}</span>
+          <span class="token keyword">const</span> props <span class="token operator">=</span> codegenNode<span class="token punctuation">.</span>arguments<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span>
+          <span class="token keyword">if</span> <span class="token punctuation">(</span>props <span class="token operator">&amp;&amp;</span> props <span class="token operator">!==</span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">null</span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            codegenNode<span class="token punctuation">.</span>arguments<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span> <span class="token operator">=</span> context<span class="token punctuation">.</span><span class="token function">hoist</span><span class="token punctuation">(</span>props<span class="token punctuation">)</span>
+          <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>child<span class="token punctuation">.</span>type <span class="token operator">===</span> NodeTypes<span class="token punctuation">.</span><span class="token constant">ELEMENT</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token function">walk</span><span class="token punctuation">(</span>child<span class="token punctuation">.</span>children<span class="token punctuation">,</span> context<span class="token punctuation">,</span> resultCache<span class="token punctuation">)</span>
+    <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>child<span class="token punctuation">.</span>type <span class="token operator">===</span> NodeTypes<span class="token punctuation">.</span><span class="token constant">FOR</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token comment">// Do not hoist v-for single child because it has to be a block</span>
+      <span class="token function">walk</span><span class="token punctuation">(</span>child<span class="token punctuation">.</span>children<span class="token punctuation">,</span> context<span class="token punctuation">,</span> resultCache<span class="token punctuation">,</span> child<span class="token punctuation">.</span>children<span class="token punctuation">.</span>length <span class="token operator">===</span> <span class="token number">1</span><span class="token punctuation">)</span>
+    <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>child<span class="token punctuation">.</span>type <span class="token operator">===</span> NodeTypes<span class="token punctuation">.</span><span class="token constant">IF</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">let</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> child<span class="token punctuation">.</span>branches<span class="token punctuation">.</span>length<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">const</span> branchChildren <span class="token operator">=</span> child<span class="token punctuation">.</span>branches<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">.</span>children
+        <span class="token comment">// Do not hoist v-if single child because it has to be a block</span>
+        <span class="token comment">// 有单个子节点的v-if不要做静态标注</span>
+        <span class="token function">walk</span><span class="token punctuation">(</span>branchChildren<span class="token punctuation">,</span> context<span class="token punctuation">,</span> resultCache<span class="token punctuation">,</span> branchChildren<span class="token punctuation">.</span>length <span class="token operator">===</span> <span class="token number">1</span><span class="token punctuation">)</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+<span class="token keyword">function</span> <span class="token function">getPatchFlag</span><span class="token punctuation">(</span><span class="token parameter">node<span class="token operator">:</span> PlainElementNode</span><span class="token punctuation">)</span><span class="token operator">:</span> number <span class="token operator">|</span> <span class="token keyword">undefined</span> <span class="token punctuation">{</span>
+  <span class="token comment">// 例如：&lt;button @click=&quot;increment&quot; v -if= &quot;state.show&quot; &gt;</span>
+  <span class="token comment">//   Count is: { { state.count } }</span>
+  <span class="token comment">// &lt;/button&gt;</span>
+  <span class="token comment">// 则对应的flag为字符串   9 /* TEXT, PROPS */  parseInt之后为9</span>
+  <span class="token keyword">let</span> codegenNode <span class="token operator">=</span> node<span class="token punctuation">.</span>codegenNode <span class="token keyword">as</span> ElementCodegenNode
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>codegenNode<span class="token punctuation">.</span>callee <span class="token operator">===</span> <span class="token constant">APPLY_DIRECTIVES</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    codegenNode <span class="token operator">=</span> codegenNode<span class="token punctuation">.</span>arguments<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span>
+  <span class="token punctuation">}</span>
+  <span class="token keyword">const</span> flag <span class="token operator">=</span> codegenNode<span class="token punctuation">.</span>arguments<span class="token punctuation">[</span><span class="token number">3</span><span class="token punctuation">]</span>
+  <span class="token keyword">return</span> flag <span class="token operator">?</span> <span class="token function">parseInt</span><span class="token punctuation">(</span>flag<span class="token punctuation">,</span> <span class="token number">10</span><span class="token punctuation">)</span> <span class="token operator">:</span> <span class="token keyword">undefined</span>
+<span class="token punctuation">}</span>
+</code></pre></div><h2 id="generate方法实现"><a href="#generate方法实现" class="header-anchor">#</a> generate方法实现</h2> <div class="language-js extra-class"><pre class="language-js"><code><span class="token keyword">export</span> <span class="token keyword">function</span> <span class="token function">generate</span><span class="token punctuation">(</span>
+  <span class="token parameter">ast<span class="token operator">:</span> RootNode<span class="token punctuation">,</span>
+  options<span class="token operator">:</span> CodegenOptions <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token punctuation">}</span></span>
+<span class="token punctuation">)</span><span class="token operator">:</span> CodegenResult <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> context <span class="token operator">=</span> <span class="token function">createCodegenContext</span><span class="token punctuation">(</span>ast<span class="token punctuation">,</span> options<span class="token punctuation">)</span>
+  <span class="token keyword">const</span> <span class="token punctuation">{</span>
+    mode<span class="token punctuation">,</span>
+    push<span class="token punctuation">,</span>
+    helper<span class="token punctuation">,</span>
+    prefixIdentifiers<span class="token punctuation">,</span>
+    indent<span class="token punctuation">,</span>
+    deindent<span class="token punctuation">,</span>
+    newline
+  <span class="token punctuation">}</span> <span class="token operator">=</span> context
+  <span class="token keyword">const</span> hasHelpers <span class="token operator">=</span> ast<span class="token punctuation">.</span>helpers<span class="token punctuation">.</span>length <span class="token operator">&gt;</span> <span class="token number">0</span>
+  <span class="token keyword">const</span> useWithBlock <span class="token operator">=</span> <span class="token operator">!</span>prefixIdentifiers <span class="token operator">&amp;&amp;</span> mode <span class="token operator">!==</span> <span class="token string">'module'</span>
+
+  <span class="token comment">// 根据最终需要的编译模式倒入不同字符串</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>mode <span class="token operator">===</span> <span class="token string">'function'</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token comment">// Generate const declaration for helpers</span>
+    <span class="token comment">// In prefix mode, we place the const declaration at top so it's done</span>
+    <span class="token comment">// only once; But if we not prefixing, we place the declaration inside the</span>
+    <span class="token comment">// with block so it doesn't incur the `in` check cost for every helper access.</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>hasHelpers<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token keyword">if</span> <span class="token punctuation">(</span>prefixIdentifiers<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token function">push</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">const { </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>ast<span class="token punctuation">.</span>helpers<span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span>helper<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">join</span><span class="token punctuation">(</span><span class="token string">', '</span><span class="token punctuation">)</span><span class="token interpolation-punctuation punctuation">}</span></span><span class="token string"> } = Vue\n</span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span>
+      <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+        <span class="token comment">// &quot;with&quot; mode.</span>
+        <span class="token comment">// 保存独立的vue映射避免冲突</span>
+        <span class="token function">push</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">const _Vue = Vue\n</span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span>
+        <span class="token comment">// in &quot;with&quot; mode, helpers are declared inside the with block to avoid</span>
+        <span class="token comment">// has check cost, but hoists are lifted out of the function - we need</span>
+        <span class="token comment">// to provide the helper here.</span>
+        <span class="token comment">// 给静态资源提供编译方法createVNode,因为它被从function抽离了出来需要单独提供</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>ast<span class="token punctuation">.</span>hoists<span class="token punctuation">.</span>length<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+          <span class="token function">push</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">const _</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>helperNameMap<span class="token punctuation">[</span><span class="token constant">CREATE_VNODE</span><span class="token punctuation">]</span><span class="token interpolation-punctuation punctuation">}</span></span><span class="token string"> = Vue.createVNode\n</span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span>
+          <span class="token keyword">if</span> <span class="token punctuation">(</span>ast<span class="token punctuation">.</span>helpers<span class="token punctuation">.</span><span class="token function">includes</span><span class="token punctuation">(</span><span class="token constant">COMMENT</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token function">push</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">const _</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>helperNameMap<span class="token punctuation">[</span><span class="token constant">COMMENT</span><span class="token punctuation">]</span><span class="token interpolation-punctuation punctuation">}</span></span><span class="token string"> = Vue.Comment\n</span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span>
+          <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+    <span class="token function">genHoists</span><span class="token punctuation">(</span>ast<span class="token punctuation">.</span>hoists<span class="token punctuation">,</span> context<span class="token punctuation">)</span>
+    <span class="token function">newline</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token function">push</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">return </span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span>
+  <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+    <span class="token comment">// 支持模块化使用的是import export</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>hasHelpers<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token function">push</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">import { </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>ast<span class="token punctuation">.</span>helpers<span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span>helper<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">join</span><span class="token punctuation">(</span><span class="token string">', '</span><span class="token punctuation">)</span><span class="token interpolation-punctuation punctuation">}</span></span><span class="token string"> } from &quot;vue&quot;\n</span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
+    <span class="token function">genHoists</span><span class="token punctuation">(</span>ast<span class="token punctuation">.</span>hoists<span class="token punctuation">,</span> context<span class="token punctuation">)</span>
+    <span class="token function">newline</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token function">push</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">export default </span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span>
+  <span class="token punctuation">}</span>
+
+  <span class="token comment">// 打入渲染函数</span>
+  <span class="token function">push</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">function render() {</span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span>
+  <span class="token function">indent</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>useWithBlock<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token function">push</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">with (this) {</span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span>
+    <span class="token function">indent</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token comment">// function mode const declarations should be inside with block</span>
+    <span class="token comment">// also they should be renamed to avoid collision with user properties</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>hasHelpers<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token function">push</span><span class="token punctuation">(</span>
+        <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">const { </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>ast<span class="token punctuation">.</span>helpers
+          <span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token parameter">s</span> <span class="token operator">=&gt;</span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>helperNameMap<span class="token punctuation">[</span>s<span class="token punctuation">]</span><span class="token interpolation-punctuation punctuation">}</span></span><span class="token string">: _</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>helperNameMap<span class="token punctuation">[</span>s<span class="token punctuation">]</span><span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span>
+          <span class="token punctuation">.</span><span class="token function">join</span><span class="token punctuation">(</span><span class="token string">', '</span><span class="token punctuation">)</span><span class="token interpolation-punctuation punctuation">}</span></span><span class="token string"> } = _Vue</span><span class="token template-punctuation string">`</span></span>
+      <span class="token punctuation">)</span>
+      <span class="token function">newline</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+      <span class="token function">newline</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+    <span class="token function">push</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">const _ctx = this</span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span>
+    <span class="token function">newline</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+  <span class="token punctuation">}</span>
+  <span class="token comment">// generate asset resolution statements</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>ast<span class="token punctuation">.</span>components<span class="token punctuation">.</span>length<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token function">genAssets</span><span class="token punctuation">(</span>ast<span class="token punctuation">.</span>components<span class="token punctuation">,</span> <span class="token string">'component'</span><span class="token punctuation">,</span> context<span class="token punctuation">)</span>
+  <span class="token punctuation">}</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>ast<span class="token punctuation">.</span>directives<span class="token punctuation">.</span>length<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token function">genAssets</span><span class="token punctuation">(</span>ast<span class="token punctuation">.</span>directives<span class="token punctuation">,</span> <span class="token string">'directive'</span><span class="token punctuation">,</span> context<span class="token punctuation">)</span>
+  <span class="token punctuation">}</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>ast<span class="token punctuation">.</span>components<span class="token punctuation">.</span>length <span class="token operator">||</span> ast<span class="token punctuation">.</span>directives<span class="token punctuation">.</span>length<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token function">newline</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+  <span class="token punctuation">}</span>
+
+  <span class="token comment">// 解析整个vnode树表达式，生成最终的运行方法</span>
+  <span class="token function">push</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">return </span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>ast<span class="token punctuation">.</span>codegenNode<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token function">genNode</span><span class="token punctuation">(</span>ast<span class="token punctuation">.</span>codegenNode<span class="token punctuation">,</span> context<span class="token punctuation">)</span>
+  <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+    <span class="token function">push</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">null</span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span>
+  <span class="token punctuation">}</span>
+
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>useWithBlock<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token function">deindent</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token function">push</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">}</span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span>
+  <span class="token punctuation">}</span>
+
+  <span class="token function">deindent</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+  <span class="token function">push</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">}</span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span>
+  <span class="token keyword">return</span> <span class="token punctuation">{</span>
+    ast<span class="token punctuation">,</span>
+    code<span class="token operator">:</span> context<span class="token punctuation">.</span>code<span class="token punctuation">,</span>
+    map<span class="token operator">:</span> context<span class="token punctuation">.</span>map <span class="token operator">?</span> context<span class="token punctuation">.</span>map<span class="token punctuation">.</span><span class="token function">toJSON</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">:</span> <span class="token keyword">undefined</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre></div></div> <footer class="page-edit"><!----> <!----></footer> <div class="page-nav"><p class="inner"><span class="prev">
+      ←
+      <a href="/vue-source-code-analysize/domDiff/dom-diff.html" class="prev">dom diff</a></span> <span class="next"><a href="/vue-source-code-analysize/vuex/vuex-start.html">vuex初识</a>
+      →
+    </span></p></div> </main></div><div class="global-ui"></div></div>
+    <script src="/vue-source-code-analysize/assets/js/app.b763ca3b.js" defer></script><script src="/vue-source-code-analysize/assets/js/2.d9983486.js" defer></script><script src="/vue-source-code-analysize/assets/js/12.fb125ffe.js" defer></script>
+  </body>
+</html>
