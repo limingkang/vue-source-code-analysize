@@ -11,7 +11,7 @@ function compileToFunction(
     hoistStatic: true,
     ...options
   })
-  console.log(code)
+  // console.log(code)
   return new Function('Vue', code)(runtimeDom) as RenderFunction
 }
 // 设置编译函数

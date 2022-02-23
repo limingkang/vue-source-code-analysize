@@ -1,0 +1,134 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <title>page by limingkang</title>
+  <script src="./dist/vue.global.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+  <meta name="description" content="前端开发记录">
+  <meta name="keywords" content="gulp,react,node,webpack,redux,require,mysql,mongodb,vue,es6">
+</head>
+
+<body>
+  <div id="container"></div>
+  <script type="text/javascript">
+    // 数据响应系统示例
+    const { createApp, reactive, computed, effect, createComponent, render, h, compile, ref, toRefs } = Vue;
+    // reactive effect简单示例1
+    // const state = reactive({
+    //   count: 0,
+    //   test: {
+    //       a: 5,
+    //   }
+    // })
+    // const f1 = () => {
+    //   console.log(state.test)
+    //   console.log(state.count)
+    // }
+    // const f2 = () => {
+    //   console.log(state.test.a)
+    // }
+    // const e1 = effect(f1)
+    // const e2 = effect(f2)
+    // document.onkeydown = function (event) {
+    //   state.test = 34;
+    //   // state.test.a = 6;
+    // };
+
+    // ref toRefs 示例2
+    // 对于数组如果想直接赋值改变其值
+    const state = reactive({
+      a: []
+    });
+    const f1 = () => {
+      state.a.forEach(element => {
+        // console.log(element);
+      });
+    }
+    const e1 = effect(f1)
+    // let state = reactive();
+    // let test = ref([]);
+    // const f1 = () => {
+    //   console.log(test.value);
+    //   // console.log(state);
+    // }
+    // const e1 = effect(f1)
+    document.onkeydown = function (event) {
+      // state = 6;
+      test.value.push(4);
+      // console.log(test.value);
+    };
+    // 我们在对象解构和扩散运算符时, 对原对象的引用都会丢失.同样对于响应式的数据:
+    // function useMousePosition() {
+    //   const pos = reactive({
+    //     x: 0,
+    //     y: 0
+    //   })
+    //   // ...
+    //   return pos
+    // }
+    // // Vue3为我们提供了一个函数便是用于这种情况：
+    // function useMousePositionRefs() {
+    //   const pos = reactive({
+    //     m: 0,
+    //     n: 0
+    //   })
+    //   return toRefs(pos)
+    // }
+    // const { x, y } = useMousePosition();
+    // console.log(x);
+    // console.log(y);
+    // const { m, n } = useMousePositionRefs();
+    // console.log(m);
+    // console.log(n);
+    // consuming component
+    // export default {
+    //   setup() {
+    //     // 响应式丢失!
+    //     const { x, y } = useMousePosition()
+    //     return {
+    //       x,
+    //       y
+    //     }
+    //     // 响应式丢失!------------------
+    //     return {
+    //       ...useMousePosition()
+    //     }
+    //     // 这是唯一能够保持响应式的办法,必须返回原先的引用--------------
+    //     return {
+    //       pos: useMousePositionRefs()
+    //     }
+    //   }
+    // }
+
+
+    // computed 示例三
+    // 发现cc.deps就是一个由b.deps和c.deps组成的数组
+    // let a = reactive({ b: 2, c: 3 })
+    // let b = computed(() => {
+    //   return a.b
+    // })
+    // let c = computed(() => {
+    //   return a.c
+    // })
+    // let dummy
+    // const cc = effect(() => {
+    //   dummy = b.value + c.value
+    // })
+    // console.log(cc.deps);
+
+    // Set类型 示例4
+    // let o = reactive(new Set())
+    // const f1 = () => {
+    //   console.log(o.size)
+    // }
+    // effect(f1);
+    // document.onkeydown = function (event) {
+    //   o.add(6);
+    // };
+  </script>
+</body>
+
+</html>

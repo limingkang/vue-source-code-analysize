@@ -87,31 +87,31 @@
 
     // 数据响应系统示例
     const { createApp, reactive, computed, effect, createComponent, render, h, compile } = Vue;
-    // const RootComponent = {
-    //   template: `
-    //     <button @click="increment">
-    //       Count is: {{ state.count }}
-    //     </button>
-    //   `,
-    //   setup() {
-    //     const state = reactive({
-    //       count: 0,
-    //     })
-    //     // console.log(state);
-    //     for (const key in state) {
-    //       // console.log(state[key])
-    //     }
-    //     function increment() {
-    //       state.count++
-    //     }
+    const RootComponent = {
+      template: `
+        <button @click="increment">
+          Count is: {{ state.count }}
+        </button>
+      `,
+      setup() {
+        const state = reactive({
+          count: 0,
+        })
+        console.log(state);
+        for (const key in state) {
+          // console.log(state[key])
+        }
+        function increment() {
+          state.count++
+        }
 
-    //     return {
-    //       state,
-    //       increment
-    //     }
-    //   }
-    // }
-    // createApp().mount(RootComponent, '#container')
+        return {
+          state,
+          increment
+        }
+      }
+    }
+    createApp().mount(RootComponent, '#container')
 
 
     // const Comp = createComponent({
@@ -192,19 +192,19 @@
     //     <div :style="{color: 'green'}"></div>`
     // const { code } = compile(template);
     // console.log(code);
-    const RootComponent = {
-        template: `
-        <div>test</div>
-        <p :class="state.name">
-          <span>Count is</span>
-          <div v-for="value in state.fordata">
-            {{value}}
-          </div>
-        </p>
-        <button @click="increment" v-if="state.show">
-          Count is: {{ state.count }}
-        </button>
-      `,
+    // const RootComponent = {
+      //   template: `
+      //   <div>test</div>
+      //   <p :class="state.name">
+      //     <span>Count is</span>
+      //     <div v-for="value in state.fordata">
+      //       {{value}}
+      //     </div>
+      //   </p>
+      //   <button @click="increment" v-if="state.show">
+      //     Count is: {{ state.count }}
+      //   </button>
+      // `,
       // template: `
       //   <div>test</div>
       //   <div v-for="value in fordata">
@@ -222,30 +222,30 @@
       //       fordata: [222, 333, 4444]
       //     }
       //   },
-        setup() {
-          const state = reactive({
-            name:'test',
-            count: 2,
-            show: true,
-            fordata: [222, 333, 4444]
-          })
-          // console.log(state);
-          // for (const key in state) {
-          //   // console.log(state[key])
-          // }
-          function increment() {
-            state.name = 'test1';
-            state.count++;
-            state.fordata = [32, 222, 45, 67];
-          }
+      //   setup() {
+      //     const state = reactive({
+      //       name:'test',
+      //       count: 2,
+      //       show: true,
+      //       fordata: [222, 333, 4444]
+      //     })
+      //     // console.log(state);
+      //     // for (const key in state) {
+      //     //   // console.log(state[key])
+      //     // }
+      //     function increment() {
+      //       state.name = 'test1';
+      //       state.count++;
+      //       state.fordata = [32, 222, 45, 67];
+      //     }
 
-          return {
-            state,
-            increment
-          }
-        }
-      }
-      createApp().mount(RootComponent, '#container')
+      //     return {
+      //       state,
+      //       increment
+      //     }
+      //   }
+      // }
+      // createApp().mount(RootComponent, '#container')
   </script>
 </body>
 

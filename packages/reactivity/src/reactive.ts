@@ -27,7 +27,6 @@ import { UnwrapRef, Ref } from './ref'
 // const weakmap = new WeakMap([[a, 1]])
 // console.log(weakmap.get(a))  //1
 
-
 // targetMap 类似 { target -> key -> dep } 的一个Map结构，用于缓存所有响应式对象和依赖收集
 export type Dep = Set<ReactiveEffect>
 export type KeyToDepMap = Map<string | symbol, Dep>
@@ -137,6 +136,7 @@ function createReactiveObject(
   if (!targetMap.has(target)) {
     targetMap.set(target, new Map())
   }
+  console.log('all proxy weakmap', targetMap)
   return observed
 }
 

@@ -150,7 +150,7 @@ export function createAppAPI<HostNode, HostElement>(
           vnode.appContext = context
           render(vnode, rootContainer)
           isMounted = true
-          console.log(vnode)
+          //console.log(vnode)
           return vnode.component!.renderProxy
         } else if (__DEV__) {
           warn(
